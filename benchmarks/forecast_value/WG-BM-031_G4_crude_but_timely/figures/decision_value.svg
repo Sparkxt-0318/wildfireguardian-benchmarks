@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 340" width="400" height="340" role="img" aria-label="G4  Decision value">
+<rect width="400" height="340" fill="#fcfcfb"/>
+<text x="36.0" y="24.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">G4  Decision value</text>
+<text x="36.0" y="40.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">higher is better</text>
+<line x1="76" y1="260.0" x2="380" y2="260.0" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="264.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">-40</text>
+<line x1="76" y1="220.0" x2="380" y2="220.0" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="224.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">-30</text>
+<line x1="76" y1="180.0" x2="380" y2="180.0" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="184.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">-20</text>
+<line x1="76" y1="140.0" x2="380" y2="140.0" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="144.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">-10</text>
+<line x1="76" y1="100.0" x2="380" y2="100.0" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="104.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">0</text>
+<line x1="76" y1="60.0" x2="380" y2="60.0" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="64.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">10</text>
+<text x="126.7" y="298.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">crude, early</text>
+<text x="228.0" y="298.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">baseline</text>
+<text x="329.3" y="298.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">accurate, late</text>
+<line x1="76" y1="280" x2="380" y2="280" stroke="#52514e" stroke-width="1"/>
+<text x="228.0" y="326.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="12" fill="#52514e" text-anchor="middle" font-weight="normal">policy</text>
+<text x="16" y="170.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="12" fill="#52514e" text-anchor="middle" transform="rotate(-90 16 170.0)">value vs baseline (loss units)</text>
+<rect x="109.7" y="80.0" width="34.0" height="20.0" rx="4" fill="#2a78d6"/>
+<text x="126.7" y="70.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">5</text>
+<rect x="211.0" y="100.0" width="34.0" height="0.0" rx="4" fill="#2a78d6"/>
+<text x="228.0" y="90.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">0</text>
+<rect x="312.3" y="100.0" width="34.0" height="160.0" rx="4" fill="#eb6834"/>
+<text x="329.3" y="276.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">-40</text>
+</svg>

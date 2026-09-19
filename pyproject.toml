@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wg-benchmarks"
+version = "0.1.0"
+description = "Benchmark, adversarial-test and reference-case suite for WildfireGuardian"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+keywords = ["wildfire", "benchmark", "evacuation", "decision-science", "validation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering",
+]
+
+# Deliberately empty: the suite runs on the standard library alone.
+# PyYAML and jsonschema are used when installed and replaced by built-in
+# fallbacks when they are not. See docs/DECISIONS.md, WG-D-007.
+dependencies = []
+
+[project.optional-dependencies]
+fast = ["PyYAML>=6.0", "jsonschema>=4.0"]
+dev = ["pytest>=7.0", "PyYAML>=6.0", "jsonschema>=4.0"]
+
+[project.scripts]
+wg-benchmarks = "wg_benchmarks.cli:main"
+
+[tool.setuptools]
+packages = ["wg_benchmarks", "wg_benchmarks.solvers"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

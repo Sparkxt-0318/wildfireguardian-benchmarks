@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wildfireguardian.example/schemas/expected_result.schema.json",
+  "title": "WildfireGuardian expected benchmark result",
+  "description": "The machine-checked answer for one benchmark, together with the derivation that justifies it. Values here are authored by hand (or by an independent enumeration), never copied out of the implementation under test.",
+  "type": "object",
+  "required": ["benchmark_id", "derivation", "results"],
+  "additionalProperties": false,
+  "properties": {
+    "benchmark_id": {"type": "string", "pattern": "^WG-BM-[0-9]{3}$"},
+    "derivation": {
+      "type": "string",
+      "minLength": 20,
+      "description": "How the numbers below were obtained. Must be reproducible by a reader without running any code."
+    },
+    "source": {
+      "type": "string",
+      "enum": ["hand_derivation", "exhaustive_enumeration", "closed_form", "seeded_simulation"],
+      "description": "Provenance of the expected values."
+    },
+    "results": {
+      "type": "object",
+      "minProperties": 1,
+      "description": "Expected result document. Compared against the solver output key by key; extra solver keys are allowed, missing ones are failures."
+    },
+    "invariants": {
+      "type": "array",
+      "description": "Relational checks that must hold in addition to the pinned values.",
+      "items": {
+        "type": "object",
+        "required": ["expression", "description"],
+        "additionalProperties": false,
+        "properties": {
+          "expression": {
+            "type": "string",
+            "description": "Python expression over the result document, evaluated with results bound as 'r' in a restricted namespace."
+          },
+          "description": {"type": "string"}
+        }
+      }
+    },
+    "notes": {"type": "string"}
+  }
+}

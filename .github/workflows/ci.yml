@@ -1,0 +1,48 @@
+name: benchmarks
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  no-dependencies:
+    name: standard library only
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Remove the optional dependencies if the image ships them
+        run: pip uninstall -y PyYAML jsonschema || true
+      - name: Confirm the environment is bare
+        run: |
+          python -c "import importlib.util as u; assert u.find_spec('yaml') is None, 'PyYAML still importable'"
+          python -c "import importlib.util as u; assert u.find_spec('jsonschema') is None, 'jsonschema still importable'"
+      - name: Validate every benchmark descriptor
+        run: python tools/validators/validate_benchmarks.py
+      - name: Run the suite
+        run: python -m wg_benchmarks run --no-colour
+      - name: Mutation testing
+        run: python -m wg_benchmarks mutate --strict
+
+  full:
+    name: with optional dependencies
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e ".[dev]"
+      - name: Tests
+        run: python -m pytest tests -q
+      - name: Reports and figures are up to date
+        run: |
+          python -m wg_benchmarks report
+          python -m wg_benchmarks figures
+          git diff --exit-code -- reports/ benchmarks/

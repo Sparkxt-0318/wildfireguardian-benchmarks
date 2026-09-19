@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.coverage
+.venv/
+venv/
+
+# External implementations' submitted results are checked, never committed.
+results/
