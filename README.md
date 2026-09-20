@@ -6,8 +6,8 @@ Sixty-six small, transparent, hand-checkable scenarios whose scientifically
 correct answers are known by derivation, together with reference solvers,
 adversarial variants, mutation tests and a conformance CLI.
 
-**Frozen at `v0.1.0`.** The suite stops growing here; a benchmark is added only
-when a real project failure exposes a missing case.
+**Frozen at `v0.1.0`** (see `CHANGELOG.md`). The suite stops growing here; a
+benchmark is added only when a real project failure exposes a missing case.
 
 ```
 > A complicated simulation producing plausible-looking maps is not validation.
