@@ -18,7 +18,7 @@ expected_behavior:
     missingness_informative: true
 tolerance:
   default: 1.0e-09
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [informative_missingness, survivorship_bias]
 mutations_expected_to_fail: [ignore_informative_missingness]
 hand_checkable: true

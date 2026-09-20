@@ -17,7 +17,7 @@ expected_behavior:
     forecast_policy: true
 tolerance:
   default: 1.0e-09
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [baseline_too_weak, forecast_value_overclaimed]
 mutations_expected_to_fail: []
 hand_checkable: true

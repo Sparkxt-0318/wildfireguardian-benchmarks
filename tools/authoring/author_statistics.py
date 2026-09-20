@@ -73,7 +73,7 @@ def main() -> None:
                 "bootstrap_ci_width_ratio": 12.0,
                 "reported_ci_width": 5.0,
             },
-            "exactness": "seeded_stochastic",
+            "exactness": "SEEDED_STOCHASTIC_VALIDATION",
             "detects": ["pseudoreplication", "effective_sample_size_inflation"],
             "mutations_expected_to_fail": ["resident_level_bootstrap"],
             "hand_checkable": True,
@@ -225,7 +225,7 @@ The bootstrap confidence intervals are Monte Carlo estimates from 200 resamples
 of 10 worlds — themselves quite variable — and are checked against the analytic
 values within a declared band (±5 on the world width, ±0.15 on the resident
 width, ±12 on the ratio). The exactness of this benchmark is recorded as
-`seeded_stochastic` for that reason.
+`SEEDED_STOCHASTIC_VALIDATION` for that reason.
 
 ## Expected
 
@@ -263,7 +263,7 @@ width, ±12 on the ratio). The exactness of this benchmark is recorded as
                 "rankings_conflict": True,
             },
             "tolerance": {"default": 1.0e-09},
-            "exactness": "exact_analytic",
+            "exactness": "CLOSED_FORM",
             "detects": ["tail_risk_ignored", "mean_only_ranking"],
             "mutations_expected_to_fail": ["mean_only_ranking"],
             "hand_checkable": True,
@@ -433,7 +433,7 @@ the better average; this benchmark is its declared detector.
                 "significant_but_not_meaningful": True,
             },
             "tolerance": {"default": 1.0e-09},
-            "exactness": "exact_analytic",
+            "exactness": "CLOSED_FORM",
             "detects": ["significance_mistaken_for_importance", "no_equivalence_test"],
             "mutations_expected_to_fail": [],
             "hand_checkable": True,
@@ -591,7 +591,7 @@ The two things a system must do instead:
                 "ranking_sign_flip": True,
             },
             "tolerance": {"default": 1.0e-09},
-            "exactness": "exact_analytic",
+            "exactness": "CLOSED_FORM",
             "detects": ["selection_bias", "unpaired_comparison"],
             "mutations_expected_to_fail": ["naive_unpaired_comparison"],
             "hand_checkable": True,

@@ -18,7 +18,7 @@ expected_behavior:
     wait_for_recon: -5.0
 tolerance:
   default: 1.0e-09
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [timeliness_ignored, evpi_mistaken_for_realisable_value]
 mutations_expected_to_fail: [forecast_always_trusted]
 hand_checkable: true

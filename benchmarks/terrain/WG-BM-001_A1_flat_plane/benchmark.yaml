@@ -17,7 +17,7 @@ expected_behavior:
   interior_undefined: 0
 tolerance:
   default: 1.0e-09
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [spurious_slope_on_flat_terrain, fabricated_aspect]
 mutations_expected_to_fail: []
 hand_checkable: true

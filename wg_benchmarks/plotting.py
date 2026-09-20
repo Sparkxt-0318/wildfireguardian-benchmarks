@@ -429,11 +429,142 @@ def figure_i2() -> Path:
                   canvas.render("lower is better on both measures; they disagree on the winner"))
 
 
+def figure_k1() -> Path:
+    """WG-BM-044: two predictive distributions with the same mean."""
+    import math
+
+    result = _result("WG-BM-044")
+    canvas = Canvas(
+        "K1  Same mean, different uncertainty",
+        "predicted distance of the fire front (m)",
+        "probability density",
+        (400, 1600),
+        (0, 0.009),
+        height=360,
+    )
+    canvas.axes(list(range(400, 1601, 200)), [0.000, 0.002, 0.004, 0.006, 0.008])
+
+    def density(x: float, mean: float, sd: float) -> float:
+        return math.exp(-0.5 * ((x - mean) / sd) ** 2) / (sd * math.sqrt(2 * math.pi))
+
+    for colour, (name, sd) in zip(SERIES, (("forecast_a", 50.0), ("forecast_b", 300.0))):
+        points = [(x, density(x, 1000.0, sd)) for x in range(400, 1601, 4)]
+        canvas.line(points, colour)
+        probability = result["hazard_probability_by_forecast"][name]
+        action = result["action_by_forecast"][name]
+        label = f"{name}  N(1000, {sd:g}^2)   P(<=800) = {probability:.4g}   ->  {action}"
+        canvas.text(canvas.px(1560), canvas.py(0.0082 if sd == 50 else 0.0074), label, 11,
+                    colour, anchor="end")
+    canvas.vrule(800.0, "threshold 800")
+    canvas.vrule(1000.0, "mean 1000")
+    return _write(
+        "WG-BM-044",
+        "same_mean_different_spread.svg",
+        canvas.render("the decision reads the mass below 800 m, not the mean"),
+    )
+
+
+def figure_k3() -> Path:
+    """WG-BM-046: expected loss against hazard probability, and where p* falls."""
+    result = _result("WG-BM-046")
+    threshold = result["decision_threshold_probability"]
+    canvas = Canvas(
+        "K3  The decision threshold comes from the loss matrix",
+        "P(route closes)",
+        "expected loss",
+        (0, 1),
+        (0, 130),
+        height=380,
+    )
+    canvas.axes([0.0, 0.2, 0.4, 0.6, 0.8, 1.0], list(range(0, 131, 20)))
+    canvas.line([(0.0, 0.0), (1.0, 120.0)], SERIES[1])
+    canvas.line([(0.0, 24.0), (1.0, 24.0)], SERIES[0])
+    canvas.text(canvas.px(0.70), canvas.py(96), "proceed:  120p", 11, SERIES[1], anchor="end")
+    canvas.text(canvas.px(0.88), canvas.py(30), "divert:  24", 11, SERIES[0], anchor="end")
+    canvas.vrule(threshold, f"p* = {threshold:g}")
+    canvas.vrule(0.5, "p = 0.5 (not a threshold)")
+    for probe, action in sorted(result["action_by_probe"].items(), key=lambda kv: float(kv[0])):
+        value = float(probe)
+        loss = min(120.0 * value, 24.0)
+        canvas.marker(value, loss, SERIES[2] if value == 0.35 else INK_SOFT, radius=5.0)
+        canvas.text(canvas.px(value), canvas.py(loss) + 20, action, 11,
+                    SERIES[2] if value == 0.35 else INK_SOFT, anchor="middle")
+    return _write(
+        "WG-BM-046",
+        "decision_threshold.svg",
+        canvas.render("at p = 0.35 the loss-derived rule diverts and a half-probability rule does not"),
+    )
+
+
+def figure_k10() -> Path:
+    """WG-BM-053: statistical against operational value of two observations."""
+    result = _result("WG-BM-053")
+    canvas = Canvas(
+        "K10  Statistical value is not operational value",
+        "candidate observation",
+        "expected loss reduction",
+        (-0.5, 1.5),
+        (0, 45),
+        width=560,
+    )
+    canvas.axes([0, 1], list(range(0, 46, 10)), ["perfect, late", "weak, early"])
+    for index, name in enumerate(("perfect_late", "weak_early")):
+        statistical = result["evsi_statistical_by_observation"][name]
+        operational = result["evsi_operational_by_observation"][name]
+        canvas.vbar(index - 0.13, statistical, SERIES[0], width=52)
+        canvas.vbar(index + 0.13, operational, SERIES[1], width=52)
+        canvas.text(canvas.px(index - 0.13), canvas.py(statistical) - 8, f"{statistical:g}", 11,
+                    INK, anchor="middle")
+        canvas.text(canvas.px(index + 0.13), canvas.py(operational) - 8, f"{operational:g}", 11,
+                    INK, anchor="middle")
+    canvas.text(canvas.px(-0.13), canvas.py(43), "statistical EVSI", 11, SERIES[0], anchor="middle")
+    canvas.text(canvas.px(1.13), canvas.py(43), "operational EVSI", 11, SERIES[1], anchor="middle")
+    return _write(
+        "WG-BM-053",
+        "statistical_vs_operational_value.svg",
+        canvas.render("deadline at minute 10; the perfect sensor reports at minute 12"),
+    )
+
+
+def figure_l2() -> Path:
+    """WG-BM-060: the mean and CVaR rank the two policies in opposite orders."""
+    result = _result("WG-BM-060")
+    canvas = Canvas(
+        "L2  Mean and CVaR disagree",
+        "policy",
+        "loss",
+        (-0.5, 1.5),
+        (0, 175),
+        width=560,
+    )
+    canvas.axes([0, 1], list(range(0, 176, 25)), ["policy_a", "policy_b"])
+    for index, policy in enumerate(("policy_a", "policy_b")):
+        mean = result["expected_loss"][policy]
+        tail = result["cvar"][policy]
+        canvas.vbar(index - 0.13, mean, SERIES[0], width=52)
+        canvas.vbar(index + 0.13, tail, SERIES[1], width=52)
+        canvas.text(canvas.px(index - 0.13), canvas.py(mean) - 8, f"{mean:g}", 11, INK,
+                    anchor="middle")
+        canvas.text(canvas.px(index + 0.13), canvas.py(tail) - 8, f"{tail:g}", 11, INK,
+                    anchor="middle")
+    canvas.text(canvas.px(-0.13), canvas.py(168), "expected loss", 11, SERIES[0], anchor="middle")
+    canvas.text(canvas.px(1.13), canvas.py(168), "CVaR(0.9)", 11, SERIES[1], anchor="middle")
+    return _write(
+        "WG-BM-060",
+        "mean_versus_cvar.svg",
+        canvas.render("declared objective is CVaR, so policy_b is recommended"),
+    )
+
+
 def write_all() -> list[Path]:
     written = [figure_e1(), figure_e4(), figure_f2(), figure_f5()]
     written += figure_c1_c3()
     written += figure_g4()
     written.append(figure_i2())
+    written.append(figure_k1())
+    written.append(figure_k3())
+    written.append(figure_k10())
+    written.append(figure_l2())
     _update_benchmark_figures(written)
     return written
 

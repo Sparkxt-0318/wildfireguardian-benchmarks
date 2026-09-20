@@ -16,7 +16,7 @@ expected_behavior:
   single_point_of_failure: true
 tolerance:
   default: 1.0e-09
-exactness: exact_enumeration
+exactness: FINITE_ENUMERATION
 detects: [egress_redundancy_overcount, articulation_point_error]
 mutations_expected_to_fail: []
 hand_checkable: true

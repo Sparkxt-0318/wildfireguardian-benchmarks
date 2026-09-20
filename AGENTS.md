@@ -9,7 +9,20 @@ expected answer is derived from the thing it is supposed to test.
 > **Expected values are authored from the scenario. They are never copied out of
 > a solver run — least of all a production implementation's.**
 
-Everything below is machinery for keeping that rule true under pressure.
+An expected answer comes from one of four sources, and the benchmark declares
+which in its `exactness` field:
+
+| Class | Source |
+|---|---|
+| `CLOSED_FORM` | an analytic expression derived by hand |
+| `FINITE_ENUMERATION` | exhaustive enumeration of a finite set |
+| `NUMERIC_REFERENCE` | a numerical procedure with a declared, analytically justified error bound |
+| `SEEDED_STOCHASTIC_VALIDATION` | reproducible given the seed, checked within a stated Monte Carlo band |
+
+**Monte Carlo is never truth where an exact answer exists**, and a Monte Carlo
+approximation is never described as exact.
+
+Everything below is machinery for keeping these rules true under pressure.
 
 ---
 
@@ -75,7 +88,9 @@ benchmarks themselves.
 3. **Write the derivation before the code.** Prose and arithmetic, in the
    benchmark README, reproducible by a reader who runs nothing.
 4. **Author it** in `tools/authoring/author_<family>.py`, taking the next free
-   `WG-BM-0NN`. Ids are permanent and never reused.
+   `WG-BM-0NN`. Ids are permanent and never reused. A large family may span more
+   than one authoring script, split by subject — the K family is authored in
+   `author_probabilistic_forecast.py` and `author_bayesian_inference.py`.
 5. **Add at least one invariant** stating the *point* of the benchmark as a
    relation over the result document. A pinned number can be satisfied for the
    wrong reason; `r['shortest_route'] not in r['feasible_routes']` cannot.
@@ -89,6 +104,16 @@ benchmarks themselves.
 9. **Regenerate** reports and figures: `python -m wg_benchmarks report && python -m wg_benchmarks figures`.
 10. **Update** `reports/KNOWN_GAPS.md` if the new benchmark closes a gap, and
     `tasks/COMPLETED.md`.
+
+## The suite is frozen at v0.1.0
+
+A new benchmark is added only when **a real project failure exposes a missing
+case** — not because a family looks asymmetric, a category looks thin, or a gap
+in `reports/KNOWN_GAPS.md` looks tractable. An unused benchmark still has to be
+maintained, still has to be kept honest about what it detects, and still dilutes
+every coverage report it appears in.
+
+If you are adding a benchmark, say in its `notes` which real failure prompted it.
 
 ## Things that are not allowed
 
@@ -117,7 +142,7 @@ benchmarks themselves.
 A change is done when all of these are true:
 
 ```bash
-python tools/validators/validate_benchmarks.py   # 43/43, 0 repository problems
+python tools/validators/validate_benchmarks.py   # 66/66, 0 repository problems
 python -m wg_benchmarks run                      # all pass
 python -m wg_benchmarks mutate --strict          # every mutation detected
 python -m pytest tests -q                        # green

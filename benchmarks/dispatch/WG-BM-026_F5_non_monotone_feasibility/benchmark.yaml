@@ -20,7 +20,7 @@ expected_behavior:
   infeasible_dispatch_below_latest_min: 5.0
 tolerance:
   default: 1.0e-06
-exactness: exact_enumeration
+exactness: FINITE_ENUMERATION
 detects: [non_monotone_feasibility, scalar_deadline_insufficient]
 mutations_expected_to_fail: [monotone_dispatch_assumption]
 hand_checkable: true

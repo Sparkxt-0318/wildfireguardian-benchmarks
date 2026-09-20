@@ -191,3 +191,136 @@ def test_scenario_expected_losses_agree():
                     ensemble["id"],
                     action,
                 )
+
+
+# --------------------------------------------------------------------------
+# Probabilistic families: K, L and M
+# --------------------------------------------------------------------------
+
+BAYES_BENCHMARKS = [
+    bid
+    for bid, b in BENCHMARKS.items()
+    if b.meta.get("solver") == "probabilistic.bayes_decision"
+]
+
+
+@pytest.mark.parametrize("benchmark_id", sorted(BAYES_BENCHMARKS))
+def test_posteriors_agree(benchmark_id):
+    """Bayes by direct enumeration reproduces every reported posterior."""
+    from analytic_solvers import exact_posterior  # noqa: PLC0415
+
+    document = _inputs(benchmark_id)["probabilistic"]
+    prior = {str(h["id"]): float(h["prior"]) for h in document["hypotheses"]}
+    hazard = str(document.get("hazard_hypothesis", sorted(prior)[0]))
+    result = run_benchmark(BENCHMARKS[benchmark_id]).result
+    for raw in document.get("observations", []):
+        likelihood = {
+            str(h): {str(z): float(v) for z, v in row.items()}
+            for h, row in raw["likelihood"].items()
+        }
+        reported = result["observations"][str(raw["id"])]["posterior_hazard_by_outcome"]
+        for outcome in raw["outcomes"]:
+            independent = exact_posterior(prior, likelihood, str(outcome))
+            assert independent[hazard] == pytest.approx(reported[str(outcome)], abs=1e-12), (
+                benchmark_id,
+                outcome,
+            )
+
+
+@pytest.mark.parametrize("benchmark_id", sorted(BAYES_BENCHMARKS))
+def test_evsi_agrees_with_rule_enumeration(benchmark_id):
+    """EVSI from enumerating every decision rule matches the branch computation.
+
+    The independent implementation never forms a posterior, so agreement is
+    evidence about the quantity rather than about a shared derivation.
+    """
+    from analytic_solvers import evsi_by_rule_enumeration  # noqa: PLC0415
+
+    document = _inputs(benchmark_id)["probabilistic"]
+    prior = {str(h["id"]): float(h["prior"]) for h in document["hypotheses"]}
+    actions = [str(a) for a in document["actions"]]
+    loss = {
+        str(a): {str(h): float(v) for h, v in row.items()}
+        for a, row in document["loss"].items()
+    }
+    result = run_benchmark(BENCHMARKS[benchmark_id]).result
+    for raw in document.get("observations", []):
+        likelihood = {
+            str(h): {str(z): float(v) for z, v in row.items()}
+            for h, row in raw["likelihood"].items()
+        }
+        outcomes = [str(z) for z in raw["outcomes"]]
+        independent = evsi_by_rule_enumeration(prior, likelihood, outcomes, actions, loss)
+        reported = result["observations"][str(raw["id"])]
+        assert independent["evsi"] == pytest.approx(reported["evsi_statistical"], abs=1e-12), (
+            benchmark_id,
+            raw["id"],
+        )
+        assert independent["prior_expected_loss"] == pytest.approx(
+            result["prior_expected_loss"], abs=1e-12
+        )
+        assert independent["evpi"] == pytest.approx(result["evpi"], abs=1e-12)
+
+
+def test_normal_tails_agree_with_quadrature():
+    """The erf closed form matches an independent Simpson quadrature.
+
+    A NUMERIC_REFERENCE cross-check: the quadrature carries a declared error
+    bound far below the comparison tolerance, so a disagreement is a bug in the
+    closed form and not quadrature error.
+    """
+    from analytic_solvers import normal_tail_by_quadrature  # noqa: PLC0415
+
+    for benchmark_id in ("WG-BM-044", "WG-BM-045"):
+        document = _inputs(benchmark_id)["probabilistic"]
+        threshold = float(document["threshold"])
+        result = run_benchmark(BENCHMARKS[benchmark_id]).result
+        for forecast in document["forecasts"]:
+            independent = normal_tail_by_quadrature(
+                threshold, float(forecast["mean"]), float(forecast["sd"])
+            )
+            reported = result["hazard_probability_by_forecast"][str(forecast["id"])]
+            assert independent == pytest.approx(reported, abs=1e-11), (
+                benchmark_id,
+                forecast["id"],
+            )
+
+
+def test_brier_scores_agree_with_case_enumeration():
+    """Group-wise Brier scores match a per-case enumeration."""
+    from analytic_solvers import brier_by_case_enumeration  # noqa: PLC0415
+
+    for benchmark_id in ("WG-BM-064", "WG-BM-065", "WG-BM-066"):
+        document = _inputs(benchmark_id)["calibration"]
+        result = run_benchmark(BENCHMARKS[benchmark_id]).result
+        independent = brier_by_case_enumeration(document["groups"])
+        assert independent == pytest.approx(result["brier_score"], abs=1e-12), benchmark_id
+
+
+RISK_BENCHMARKS = [
+    bid for bid, b in BENCHMARKS.items() if b.meta.get("solver") == "risk.objective_comparison"
+]
+
+
+@pytest.mark.parametrize("benchmark_id", sorted(RISK_BENCHMARKS))
+def test_risk_quantities_agree(benchmark_id):
+    """Expected loss and CVaR match independent implementations."""
+    from analytic_solvers import compute_exact_scenario_loss, cvar_by_expansion  # noqa: PLC0415
+
+    document = _inputs(benchmark_id)["risk"]
+    probabilities = {str(s["id"]): float(s["probability"]) for s in document["scenarios"]}
+    losses = {
+        str(a): {str(s): float(v) for s, v in row.items()}
+        for a, row in document["losses"].items()
+    }
+    alpha = float(document.get("cvar_alpha", 0.9))
+    result = run_benchmark(BENCHMARKS[benchmark_id]).result
+    for action in document["actions"]:
+        action = str(action)
+        assert compute_exact_scenario_loss(probabilities, losses[action]) == pytest.approx(
+            result["expected_loss"][action], abs=1e-12
+        )
+        outcomes = [(losses[action][s], probabilities[s]) for s in probabilities]
+        assert cvar_by_expansion(outcomes, alpha) == pytest.approx(
+            result["cvar"][action], abs=1e-6
+        ), (benchmark_id, action)

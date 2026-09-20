@@ -13,11 +13,15 @@ distribution into equal-probability atoms, try every mapping.
 """
 
 from .brute_force import (  # noqa: F401
+    brier_by_case_enumeration,
     compute_exact_scenario_loss,
     cvar_by_expansion,
     enumerate_actions,
     enumerate_all_paths,
     enumerate_dispatch_times,
+    evsi_by_rule_enumeration,
+    exact_posterior,
+    normal_tail_by_quadrature,
     simulate_mission,
     walk_path,
 )

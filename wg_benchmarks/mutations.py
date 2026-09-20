@@ -240,6 +240,139 @@ _register(
 )
 
 
+# --------------------------------------------------------------------------
+# Stochastic information, probabilistic forecasting and risk (K, L, M families)
+# --------------------------------------------------------------------------
+
+_register(
+    "ignore_forecast_variance",
+    "Predictive distribution collapsed to its mean",
+    "A forecast distribution is reduced to a point estimate, so the probability "
+    "of crossing a threshold becomes a hard 0 or 1 and two forecasts with the "
+    "same mean and different spread become indistinguishable.",
+    "forecast_uncertainty_discarded",
+    ("WG-BM-044", "WG-BM-045"),
+)
+_register(
+    "fixed_half_probability_threshold",
+    "Decision taken at p = 0.5 regardless of loss",
+    "The conservative action is taken when the hazard probability exceeds one "
+    "half, instead of at the threshold implied by the loss matrix.",
+    "decision_threshold_not_derived_from_loss",
+    ("WG-BM-046", "WG-BM-047"),
+)
+_register(
+    "renormalise_including_inadmissible",
+    "Inadmissible scenarios included in the normalisation",
+    "Scenario weights are renormalised over every scenario in the file, "
+    "including those declared physically inadmissible, so the ensemble no "
+    "longer represents a coherent belief.",
+    "scenario_weights_normalised_incorrectly",
+    ("WG-BM-048",),
+)
+_register(
+    "posterior_replaced_by_prior",
+    "Posterior computed and then not used",
+    "The Bayesian update is performed correctly and the decision is taken on "
+    "the prior anyway - the classic wiring bug, invisible in the reported "
+    "posterior.",
+    "posterior_not_used_for_decision",
+    ("WG-BM-049", "WG-BM-051"),
+)
+_register(
+    "ignore_observation_likelihood",
+    "Observation likelihood ignored",
+    "The likelihood is treated as uninformative, so the posterior equals the "
+    "prior however diagnostic the observation actually was.",
+    "likelihood_discarded",
+    ("WG-BM-049", "WG-BM-051"),
+)
+_register(
+    "assume_conditional_independence",
+    "Correlated observations multiplied as independent",
+    "A declared joint likelihood is replaced by the product of the per-sensor "
+    "marginals, producing an overconfident posterior from sensors that share an "
+    "error mode.",
+    "observation_correlation_ignored",
+    ("WG-BM-054",),
+)
+_register(
+    "count_duplicate_evidence",
+    "One measurement counted twice",
+    "Two records carrying the same underlying measurement are treated as two "
+    "independent observations, doubling the log-likelihood ratio.",
+    "duplicate_evidence_double_counted",
+    ("WG-BM-055",),
+)
+_register(
+    "assume_missing_at_random",
+    "Missingness assumed uninformative",
+    "A record that failed to arrive is treated as missing at random, although "
+    "its probability of arriving depends on the hazard being estimated.",
+    "missingness_mechanism_ignored",
+    ("WG-BM-056",),
+)
+_register(
+    "non_detection_is_absence",
+    "Non-detection treated as certainty of no hazard",
+    "After a negative detection the posterior probability of fire is set to "
+    "zero, ignoring the detector's false-negative rate.",
+    "non_detection_read_as_absence",
+    ("WG-BM-057",),
+)
+_register(
+    "detection_is_certainty",
+    "Detection treated as certainty of hazard",
+    "After a positive detection the posterior probability of fire is set to "
+    "one, ignoring the detector's false-positive rate and the base rate.",
+    "detection_read_as_certainty",
+    ("WG-BM-058",),
+)
+_register(
+    "ignore_availability_time",
+    "Observation availability time not checked",
+    "The operational value of an observation is set equal to its statistical "
+    "value, so information that arrives after the decision deadline still "
+    "counts.",
+    "observation_timeliness_ignored",
+    ("WG-BM-052", "WG-BM-053"),
+)
+_register(
+    "choose_by_information_gain",
+    "Observation chosen by entropy reduction",
+    "The observation that reduces uncertainty most is preferred over the one "
+    "that improves the decision most, so information with no decision value is "
+    "acquired.",
+    "information_gain_mistaken_for_decision_value",
+    ("WG-BM-050", "WG-BM-053"),
+)
+_register(
+    "objective_ignored_use_mean",
+    "Declared risk objective ignored",
+    "The expected-loss winner is reported although the configured objective is "
+    "CVaR, silently substituting one risk attitude for another.",
+    "declared_objective_ignored",
+    ("WG-BM-060",),
+)
+_register(
+    "unresolved_state_blocks_decision",
+    "Unresolved world state treated as an unresolved decision",
+    "Because no scenario dominates, the system reports that it cannot decide "
+    "and asks for more information, even where one action is acceptable in "
+    "every scenario.",
+    "uncertainty_conflated_with_indecision",
+    ("WG-BM-061", "WG-BM-063"),
+)
+_register(
+    "aggregate_calibration_only",
+    "Conditional calibration reported as the aggregate",
+    "Reliability is assessed over the pooled sample only, so a forecast that is "
+    "calibrated on average and wrong in every regime passes.",
+    "aggregate_calibration_masks_regime_failure",
+    ("WG-BM-066",),
+)
+
+
 _ACTIVE: set[str] = set()
 
 

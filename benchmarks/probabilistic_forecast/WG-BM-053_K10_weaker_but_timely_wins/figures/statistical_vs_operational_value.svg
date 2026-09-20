@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" width="560" height="380" role="img" aria-label="K10  Statistical value is not operational value">
+<rect width="560" height="380" fill="#fcfcfb"/>
+<text x="36.0" y="24.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">K10  Statistical value is not operational value</text>
+<text x="36.0" y="40.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">deadline at minute 10; the perfect sensor reports at minute 12</text>
+<line x1="76" y1="324.0" x2="536" y2="324.0" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="328.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">0</text>
+<line x1="76" y1="264.4" x2="536" y2="264.4" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="268.4" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">10</text>
+<line x1="76" y1="204.9" x2="536" y2="204.9" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="208.9" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">20</text>
+<line x1="76" y1="145.3" x2="536" y2="145.3" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="149.3" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">30</text>
+<line x1="76" y1="85.8" x2="536" y2="85.8" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="89.8" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">40</text>
+<text x="191.0" y="342.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">perfect, late</text>
+<text x="421.0" y="342.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">weak, early</text>
+<line x1="76" y1="324" x2="536" y2="324" stroke="#52514e" stroke-width="1"/>
+<text x="306.0" y="366.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="12" fill="#52514e" text-anchor="middle" font-weight="normal">candidate observation</text>
+<text x="16" y="190.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="12" fill="#52514e" text-anchor="middle" transform="rotate(-90 16 190.0)">expected loss reduction</text>
+<rect x="135.1" y="85.8" width="52" height="238.2" rx="4" fill="#2a78d6"/>
+<rect x="194.9" y="324.0" width="52" height="0.0" rx="4" fill="#eb6834"/>
+<text x="161.1" y="77.8" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">40</text>
+<text x="220.9" y="316.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">0</text>
+<rect x="365.1" y="246.6" width="52" height="77.4" rx="4" fill="#2a78d6"/>
+<rect x="424.9" y="246.6" width="52" height="77.4" rx="4" fill="#eb6834"/>
+<text x="391.1" y="238.6" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">13</text>
+<text x="450.9" y="238.6" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">13</text>
+<text x="161.1" y="67.9" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#2a78d6" text-anchor="middle" font-weight="normal">statistical EVSI</text>
+<text x="450.9" y="67.9" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#eb6834" text-anchor="middle" font-weight="normal">operational EVSI</text>
+</svg>

@@ -16,7 +16,7 @@ expected_behavior:
   last_reached: p_far
 tolerance:
   default: 1.0e-09
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [arrival_time_scaling_error, arrival_ordering_error]
 mutations_expected_to_fail: []
 hand_checkable: true

@@ -26,10 +26,13 @@
     },
     "label": {
       "type": "string",
-      "pattern": "^[A-J][0-9]+$",
-      "description": "Family label from the design document, e.g. F5."
+      "pattern": "^[A-M][0-9]+$",
+      "description": "Family label from the design document, e.g. F5 or K11."
     },
-    "title": {"type": "string", "minLength": 3},
+    "title": {
+      "type": "string",
+      "minLength": 3
+    },
     "category": {
       "type": "string",
       "enum": [
@@ -43,14 +46,24 @@
         "forecast_value",
         "scenario_uncertainty",
         "statistics",
-        "protectability"
+        "protectability",
+        "probabilistic_forecast",
+        "risk",
+        "calibration"
       ]
     },
     "difficulty": {
       "type": "string",
-      "enum": ["basic", "intermediate", "adversarial"]
+      "enum": [
+        "basic",
+        "intermediate",
+        "adversarial"
+      ]
     },
-    "purpose": {"type": "string", "minLength": 10},
+    "purpose": {
+      "type": "string",
+      "minLength": 10
+    },
     "solver": {
       "type": "string",
       "description": "Identifier of the reference solver that turns inputs/ into a result document.",
@@ -59,13 +72,20 @@
     "inputs": {
       "type": "object",
       "description": "Named input documents, given as paths relative to the benchmark directory.",
-      "additionalProperties": {"type": "string"}
+      "additionalProperties": {
+        "type": "string"
+      }
     },
     "assumptions": {
       "type": "object",
       "description": "Semantic switches the expected answer depends on. A benchmark whose answer changes under a different convention MUST state the convention here.",
       "additionalProperties": {
-        "type": ["boolean", "string", "number", "null"]
+        "type": [
+          "boolean",
+          "string",
+          "number",
+          "null"
+        ]
       }
     },
     "expected_behavior": {
@@ -78,13 +98,22 @@
       "description": "Numeric tolerances. 'default' applies everywhere; other keys override by leaf name or dotted result path. A scalar is an absolute tolerance; {abs: .., rel: ..} sets both.",
       "additionalProperties": {
         "anyOf": [
-          {"type": "number", "minimum": 0},
+          {
+            "type": "number",
+            "minimum": 0
+          },
           {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "abs": {"type": "number", "minimum": 0},
-              "rel": {"type": "number", "minimum": 0}
+              "abs": {
+                "type": "number",
+                "minimum": 0
+              },
+              "rel": {
+                "type": "number",
+                "minimum": 0
+              }
             }
           }
         ]
@@ -92,18 +121,29 @@
     },
     "exactness": {
       "type": "string",
-      "enum": ["exact_analytic", "exact_enumeration", "seeded_stochastic", "qualitative"],
-      "description": "How the expected answer was obtained. exact_analytic: closed form derived by hand. exact_enumeration: finite exhaustive enumeration. seeded_stochastic: deterministic given the seed, with a stated tolerance. qualitative: an ordering or sign, not a number."
+      "enum": [
+        "CLOSED_FORM",
+        "FINITE_ENUMERATION",
+        "NUMERIC_REFERENCE",
+        "SEEDED_STOCHASTIC_VALIDATION"
+      ],
+      "description": "How the expected answer was obtained, and therefore how much it is worth. CLOSED_FORM: an analytic expression derived by hand (elementary functions, erf and log included), exact to machine precision. FINITE_ENUMERATION: exhaustive enumeration of a finite set; no approximation. NUMERIC_REFERENCE: a numerical procedure with a declared, analytically justified error bound - never a Monte Carlo estimate. SEEDED_STOCHASTIC_VALIDATION: reproducible given the seed and checked within a stated Monte Carlo band. A Monte Carlo approximation is never described as exact."
     },
     "detects": {
       "type": "array",
       "minItems": 1,
-      "items": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9_]+$"
+      },
       "description": "Failure-mode identifiers this benchmark is designed to catch."
     },
     "mutations_expected_to_fail": {
       "type": "array",
-      "items": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9_]+$"
+      },
       "description": "Mutation ids from wg_benchmarks.mutations that this benchmark must detect."
     },
     "hand_checkable": {
@@ -112,12 +152,118 @@
     },
     "figures": {
       "type": "array",
-      "items": {"type": "string"}
+      "items": {
+        "type": "string"
+      }
     },
-    "notes": {"type": "string"},
+    "notes": {
+      "type": "string"
+    },
     "references": {
       "type": "array",
-      "items": {"type": "string"}
+      "items": {
+        "type": "string"
+      }
+    },
+    "information_structure": {
+      "type": "object",
+      "description": "Declared structure of a benchmark that involves uncertainty. Optional, and absent from every deterministic benchmark. Where present it names the pieces of the probabilistic problem so that a reader can see which of point prediction, distribution, ensemble, posterior and decision the benchmark is actually about.",
+      "additionalProperties": false,
+      "properties": {
+        "probabilistic": {
+          "type": "boolean"
+        },
+        "forecast_type": {
+          "type": "string",
+          "enum": [
+            "point",
+            "predictive_distribution",
+            "scenario_ensemble",
+            "binary_probability",
+            "posterior_belief",
+            "none"
+          ]
+        },
+        "prior": {
+          "type": [
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "likelihood": {
+          "type": [
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "posterior": {
+          "type": [
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "observation_time_min": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "availability_time_min": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "decision_deadline_min": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "loss_matrix": {
+          "type": [
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "decision_threshold": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        },
+        "expected_value": {
+          "type": [
+            "string",
+            "object",
+            "number",
+            "null"
+          ]
+        },
+        "independence_assumed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "missingness_mechanism": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "MCAR",
+            "MAR",
+            "MNAR",
+            null
+          ]
+        }
+      }
     }
   }
 }

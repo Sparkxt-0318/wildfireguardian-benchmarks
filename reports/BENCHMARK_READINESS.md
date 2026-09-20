@@ -2,20 +2,24 @@
 
 **Read this before the pass count.**
 
-As of this writing the suite contains 43 benchmarks, all passing against the
-reference solvers, with 24 of 24 injected bugs detected and 113 tests green.
-None of those numbers is the answer to "is WildfireGuardian validated?" This
-document answers the five questions that matter.
+> **Superseded in part by `reports/V0_1_SCIENTIFIC_AUDIT.md`**, which is the
+> frozen v0.1.0 statement and answers ten questions rather than five. This
+> document remains the living readiness note and the home of the three
+> conformance tiers.
+
+The suite contains 66 benchmarks, all passing against the reference solvers,
+with 39 of 39 injected bugs detected and 183 tests green. None of those numbers
+is the answer to "is WildfireGuardian validated?"
 
 | | |
 |---|---|
-| benchmarks | 43 |
-| hand-checkable | 43 / 43 |
-| exact (analytic or exhaustive) | 42 / 43 |
-| seeded stochastic | 1 / 43 |
-| difficulty: basic / intermediate / adversarial | 11 / 11 / 21 |
-| distinct failure modes targeted | 77 |
-| mutations injected / detected | 24 / 24 |
+| benchmarks | 66 |
+| hand-checkable | 66 / 66 |
+| `CLOSED_FORM` / `FINITE_ENUMERATION` | 51 / 14 |
+| `SEEDED_STOCHASTIC_VALIDATION` | 1 |
+| difficulty: basic / intermediate / adversarial | 16 / 16 / 34 |
+| distinct failure modes targeted | 115 |
+| mutations injected / detected | 39 / 39 |
 | required third-party runtime dependencies | 0 |
 
 ---
@@ -85,6 +89,26 @@ matrix is `reports/MUTATION_MATRIX.md`.
 | Tail risk discarded in favour of the mean | `WG-BM-038` |
 | Unpaired comparison across different world samples | `WG-BM-040` |
 
+**Probabilistic forecasts, belief and risk** (added in v0.1)
+
+| Error | Detected by |
+|---|---|
+| Predictive distribution collapsed to its mean | `WG-BM-044`, `045` |
+| Decision threshold not derived from the loss matrix | `WG-BM-046`, `047` |
+| Scenario weights normalised over inadmissible members | `WG-BM-048` |
+| Posterior computed and then not used | `WG-BM-049`, `051` |
+| Observation likelihood ignored | `WG-BM-049`, `051` |
+| Acquisition judged by information gain | `WG-BM-050`, `053` |
+| Observation availability time ignored | `WG-BM-052`, `053` |
+| Correlated observations multiplied as independent | `WG-BM-054` |
+| One measurement counted twice | `WG-BM-055` |
+| Missingness assumed uninformative | `WG-BM-056` |
+| Non-detection treated as certainty of no hazard | `WG-BM-057` |
+| Detection treated as certainty of hazard | `WG-BM-058` |
+| Declared risk objective ignored | `WG-BM-060` |
+| Unresolved state treated as an unresolved decision | `WG-BM-061`, `063` |
+| Conditional calibration reported as the aggregate | `WG-BM-066` |
+
 ---
 
 ## 2. Which errors remain uncovered?
@@ -116,26 +140,31 @@ at scale, performance, traffic microsimulation and human factors.
 
 ## 3. Which benchmarks are mathematically exact?
 
-**42 of 43.** Every benchmark is hand-checkable; the exactness class says what
+**65 of 66.** Every benchmark is hand-checkable; the exactness class says what
 kind of exactness.
 
-**`exact_analytic` — 34 benchmarks.** A closed form derived by hand and written
+**`CLOSED_FORM` — 51 benchmarks.** A closed form derived by hand and written
 out in the benchmark README. Slope on a plane is `atan(sqrt(0.02))`; the head
 arrival of a wind-driven front at 200 m is `200 / 20`; the latest dispatch in
 WG-BM-022 is `20 - (5 + 5 + 5)`. Checked to `1e-9`.
 
-**`exact_enumeration` — 8 benchmarks.** A finite exhaustive enumeration with no
+**`FINITE_ENUMERATION` — 14 benchmarks.** A finite exhaustive enumeration with no
 approximation: all simple paths (`WG-BM-005`-`008`), all departures on a
 declared grid (`WG-BM-021`), all dispatch times with bisection-refined interval
 endpoints (`WG-BM-026`), all burned cells on a declared grid (`WG-BM-012`), all
-decision rules (`WG-BM-017`).
+decision rules (`WG-BM-017`), all ensemble members and actions (`WG-BM-048`,
+`WG-BM-059`-`063`).
+
+`NUMERIC_REFERENCE` is defined and currently unused: no benchmark needs a
+numerical procedure for its expected value, and the class exists so that if one
+ever does, it cannot be labelled exact.
 
 One caveat, stated in the benchmark itself: WG-BM-026's
 `infeasible_dispatch_below_latest_min` is the first *sampled* failing dispatch
 time and depends on the declared 1-minute grid. The *existence* of such a time
 is exact and is asserted separately as an invariant.
 
-**`seeded_stochastic` — 1 benchmark.** WG-BM-037's bootstrap intervals are Monte
+**`SEEDED_STOCHASTIC_VALIDATION` — 1 benchmark.** WG-BM-037's bootstrap intervals are Monte
 Carlo estimates from 200 resamples of 10 worlds. Its analytic standard errors
 and their ratio are exact and checked to `1e-9`; the bootstrap quantities are
 checked against them within a declared band whose width is justified by the
@@ -150,7 +179,7 @@ Three independent derivations back every headline number: the authored value in
 
 ## 4. Which rely on qualitative expectations?
 
-No benchmark is classed `qualitative`: every one pins numbers. But several pin
+No benchmark is classed as qualitative; every one pins numbers. But several pin
 numbers whose *magnitude* is a construction choice while the scientific content
 is the **sign, the ordering, or the existence** of an effect. For those, the
 invariants rather than the pinned values are the claim.
@@ -167,6 +196,10 @@ invariants rather than the pinned values are the claim.
 | `WG-BM-038` | mean 10 vs 12.8, CVaR 100 vs 20 — the claim is that the two criteria **disagree** |
 | `WG-BM-040` | -10.33 vs +3 — the claim is the **sign flip** |
 | `WG-BM-037` | bootstrap widths — the claim is the **order of magnitude** of the ratio, checked within a declared band |
+| `WG-BM-045` | errors 16 m and 46 m — the claim is that the **smaller** error carries the **larger** regret |
+| `WG-BM-050` | 0.0131 bits — the claim is that information is positive while EVSI is **exactly** zero |
+| `WG-BM-053` | 13 against 0 — the claim is that the two rankings are **reversed** |
+| `WG-BM-062` | margin 0.21 — the claim is that a perturbation inside the declared tolerance **flips** it |
 
 The loss units throughout the G, H, I and J families are scenario-local and
 dimensionless. A loss of 100 in one benchmark and a loss of 100 in another are
@@ -194,6 +227,9 @@ Nothing downstream is meaningful until these pass. They are the semantics.
 | `WG-BM-022` | the assisted-dispatch chain includes on-scene time |
 | `WG-BM-034` | joint hazard probabilities come from scenarios, not from multiplied marginals |
 | `WG-BM-037` | uncertainty is quantified at the unit of randomisation |
+| `WG-BM-047` | the decision threshold is derived from the loss matrix, never assumed |
+| `WG-BM-049` | observation, then posterior, then decision, in that order |
+| `WG-BM-057` | a non-detection is a likelihood ratio, not a certainty |
 
 ### Tier 2 — Mandatory before a component informs a research decision
 
@@ -208,7 +244,14 @@ feasibility**, capacity) ·
 `WG-BM-029`-`031`, `WG-BM-033` (skill is not value, timeliness, forecast harm) ·
 `WG-BM-035` (no averaging of inputs) ·
 `WG-BM-038`, `WG-BM-040` (tail risk, paired comparison) ·
-`WG-BM-042`, `WG-BM-043` (realisable value of information)
+`WG-BM-042`, `WG-BM-043` (realisable value of information) ·
+`WG-BM-044`, `WG-BM-045` (forecast uncertainty is the forecast) ·
+`WG-BM-050` (information with no decision value) ·
+`WG-BM-052`, `WG-BM-053` (availability time, and timing against quality) ·
+`WG-BM-054`-`056` (correlated, duplicate and missing evidence) ·
+`WG-BM-058` (base rates) · `WG-BM-060` (the declared objective) ·
+`WG-BM-061`, `WG-BM-062` (state resolution against decision resolution) ·
+`WG-BM-066` (conditional calibration)
 
 If only one benchmark from this tier can be adopted, adopt **`WG-BM-026`**. A
 system that reports a single "latest safe dispatch time" is wrong about a
@@ -227,7 +270,10 @@ artefact or as flat ground) · `WG-BM-005`, `WG-BM-006` (what counts as a single
 point of failure) · `WG-BM-009`-`011` (the analytic fire models) ·
 `WG-BM-028`, `WG-BM-032` (zero-value cases: a component that never reports zero
 added value fails these and should) · `WG-BM-036` (the worst-case criterion) ·
-`WG-BM-039` (the practical margin) · `WG-BM-041` (robust protectability)
+`WG-BM-039` (the practical margin) · `WG-BM-041` (robust protectability) ·
+`WG-BM-046` (the threshold convention) · `WG-BM-059` (declining to name a
+winner) · `WG-BM-063` (poor skill, stable decision) · `WG-BM-064`, `WG-BM-065`
+(the calibration arithmetic)
 
 ---
 
@@ -244,7 +290,10 @@ Anyone writing "validated against the WildfireGuardian benchmark suite" should
 write the narrow claim.
 
 The single most likely way for this suite to mislead is for a component to pass
-everything and then be deployed with a probabilistic forecast, multiple
-residents per vehicle, and a sensor network that fails for several reasons at
-once — the three severe gaps in section 2. Closing them is the work that would
-most increase what a green run is worth.
+everything and then be deployed with a **sequential** filter over a continuous
+state, multiple residents per vehicle, and likelihoods it had to estimate rather
+than being given — the severe gaps in `reports/KNOWN_GAPS.md`. Closing them is
+the work that would most increase what a green run is worth.
+
+For the frozen v0.1.0 statement, including what benchmark success cannot
+establish, see `reports/V0_1_SCIENTIFIC_AUDIT.md`.

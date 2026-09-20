@@ -16,7 +16,7 @@ expected_behavior:
   max_slope_deg: 8.049466975528397
 tolerance:
   default: 1.0e-09
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [missing_treated_as_zero, missing_propagation_scope]
 mutations_expected_to_fail: [missing_as_zero]
 hand_checkable: true

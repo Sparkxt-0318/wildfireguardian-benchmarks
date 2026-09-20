@@ -19,7 +19,7 @@ expected_behavior:
   latest_feasible_dispatch_min: null
 tolerance:
   default: 1.0e-06
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [capacity_ignored, free_flow_travel_time_assumed]
 mutations_expected_to_fail: [ignore_congestion]
 hand_checkable: true

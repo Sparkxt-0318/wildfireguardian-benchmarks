@@ -17,7 +17,7 @@ expected_behavior:
       best_action_by_expected_loss: hold
 tolerance:
   default: 1.0e-09
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [average_of_inputs_fallacy, scenario_blending]
 mutations_expected_to_fail: [average_scenario_inputs]
 hand_checkable: true

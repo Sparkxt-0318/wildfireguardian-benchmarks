@@ -15,7 +15,7 @@ expected_behavior:
   realizable_value_of_information: 45.0
 tolerance:
   default: 1.0e-09
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [information_value_underclaimed, protectability_misclassified]
 mutations_expected_to_fail: []
 hand_checkable: true

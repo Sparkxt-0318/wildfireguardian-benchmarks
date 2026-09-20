@@ -18,7 +18,7 @@ expected_behavior:
     "15": null
 tolerance:
   default: 1.0e-06
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [service_time_ignored, sensitivity_flat_to_service_time]
 mutations_expected_to_fail: [ignore_pickup_duration]
 hand_checkable: true

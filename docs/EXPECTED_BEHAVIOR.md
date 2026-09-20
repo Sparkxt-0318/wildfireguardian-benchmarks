@@ -41,14 +41,19 @@ Every benchmark declares how much its expected answer is worth:
 
 | Class | Meaning | Tolerance |
 |---|---|---|
-| `exact_analytic` | closed form derived by hand in the README | `1e-9` or tighter |
-| `exact_enumeration` | finite exhaustive enumeration; no approximation | `1e-9`, or the declared grid resolution |
-| `seeded_stochastic` | deterministic given the seed, checked within a stated Monte Carlo band | declared per field, with justification |
-| `qualitative` | an ordering, a sign or a flag rather than a number | exact on the flag |
+| `CLOSED_FORM` | an analytic expression derived by hand — elementary functions, `erf` and `log` included — exact to machine precision | `1e-9` or tighter |
+| `FINITE_ENUMERATION` | exhaustive enumeration of a finite set; no approximation | `1e-9`, or the declared grid resolution |
+| `NUMERIC_REFERENCE` | a numerical procedure with a declared, analytically justified error bound. **Never a Monte Carlo estimate.** | the declared bound |
+| `SEEDED_STOCHASTIC_VALIDATION` | reproducible given the seed and checked within a stated Monte Carlo band | declared per field, with justification |
+
+A Monte Carlo approximation is never described as exact, and Monte Carlo is
+never used as truth where an exact answer is available. Where a closed form and
+an enumeration both exist, the closed form is the expected value and the
+enumeration is a cross-check.
 
 Current distribution is in `reports/BENCHMARK_CATALOG.md`. Everything in the
-suite is currently `exact_analytic` or `exact_enumeration` except WG-BM-037,
-which is `seeded_stochastic` and pins its analytic counterparts exactly
+suite is `CLOSED_FORM` or `FINITE_ENUMERATION` except WG-BM-037, which is
+`SEEDED_STOCHASTIC_VALIDATION` and pins its analytic counterparts exactly
 alongside the bootstrap ones.
 
 ## What a passing benchmark does and does not establish

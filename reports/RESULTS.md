@@ -2,7 +2,7 @@
 
 # Last recorded suite run
 
-43/43 benchmarks pass against the reference solvers.
+66/66 benchmarks pass against the reference solvers.
 
 | ID | Label | Status | Title |
 |---|---|---|---|
@@ -49,3 +49,26 @@
 | `WG-BM-041` | J1 | PASS | Deep uncertainty, but one action is acceptable in every world |
 | `WG-BM-042` | J2 | PASS | No robust action exists, and a timely observation supplies one |
 | `WG-BM-043` | J3 | PASS | The same observation, five minutes too late, is worth nothing |
+| `WG-BM-044` | K1 | PASS | Same mean, different uncertainty, different correct action |
+| `WG-BM-045` | K2 | PASS | Better point error, worse decision: a 16 m forecast beaten by a 46 m one |
+| `WG-BM-046` | K3 | PASS | The action switches at p* = 0.2, which the loss matrix fixes and 0.5 does not |
+| `WG-BM-047` | K4 | PASS | Asymmetric loss puts the threshold at one per cent |
+| `WG-BM-048` | K5 | PASS | A coherent ensemble: admissibility, normalisation and the joint |
+| `WG-BM-049` | K6 | PASS | Observation, posterior, decision: the canonical update |
+| `WG-BM-050` | K7 | PASS | The posterior moves, the action does not: EVSI is exactly zero |
+| `WG-BM-051` | K8 | PASS | Exact expected value of sample information: 22 against an EVPI of 40 |
+| `WG-BM-052` | K9 | PASS | Statistical value 22, operational value 0: the sensor reports at minute 12 |
+| `WG-BM-053` | K10 | PASS | A weak timely sensor beats a perfect late one, 13 to 0 |
+| `WG-BM-054` | K11 | PASS | Two sensors that fail together: independence turns 0.174 into 0.059 |
+| `WG-BM-055` | K12 | PASS | One measurement, two records: duplicate evidence must not double confidence |
+| `WG-BM-056` | K13 | PASS | Silence is evidence: a missing report raises P(dangerous) from 0.05 to 0.387 |
+| `WG-BM-057` | K14 | PASS | No detection leaves P(fire) at 0.073, which is still above the threshold |
+| `WG-BM-058` | K15 | PASS | A detection raises P(fire) from 0.02 to 0.22, and 0.22 is not 1 |
+| `WG-BM-059` | L1 | PASS | Better average, worse worst case, and no winner declared |
+| `WG-BM-060` | L2 | PASS | Ranking reversal between the mean and CVaR, with the objective declared |
+| `WG-BM-061` | L3 | PASS | The world is unresolved and the decision is not |
+| `WG-BM-062` | L4 | PASS | The world is 97 per cent resolved and the decision turns on 0.21 |
+| `WG-BM-063` | L5 | PASS | Poor forecast skill, stable decision |
+| `WG-BM-064` | M1 | PASS | A perfectly calibrated binary forecast, with the Murphy decomposition exact |
+| `WG-BM-065` | M2 | PASS | Same classifications, probabilities pushed to the extremes, one action changes |
+| `WG-BM-066` | M3 | PASS | Perfect aggregate calibration hiding two badly wrong regimes |

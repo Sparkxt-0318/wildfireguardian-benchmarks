@@ -6,118 +6,151 @@ when a benchmark closes it.
 Gaps are ordered by how much damage the uncovered failure mode could do if it
 reached an operational decision.
 
+**Closed since v0.0:** probabilistic forecast calibration (now the K1, K2 and M
+families), and the absence of any posterior/decision chain (now K6-K15).
+
 ---
 
 ## Severe — a wrong answer here would not be caught
 
-### G-1. Probabilistic forecast calibration
+### G-1. Continuous and sequential inference
 
-Every information source in the G and J families emits a **deterministic**
-signal. WG-BM-029 shows a 20 m deterministic error costing 92, and notes in
-passing that a forecast reporting "1010 m, sigma 300 m" would have supported the
-right action. Nothing tests that.
+Every Bayesian benchmark in the K family has **two hypotheses and at most four
+outcomes**, and every update is a single step. Untested:
 
-Missing: a benchmark where a *worse-scoring but well-calibrated* probabilistic
-forecast beats a better-scoring deterministic one because it reports its own
-uncertainty near a decision boundary; and a benchmark that catches an
-overconfident forecast whose point estimates are excellent.
+* a continuous state (front position, spread rate) rather than a binary
+  hypothesis;
+* **sequential** updating over a stream of observations, which is where
+  correlation errors compound rather than merely occur once — WG-BM-054's
+  −2-bit error applied ten times running is an 18-bit error;
+* the interaction between a filter's process model and the observation
+  likelihood.
 
-**Consequence if uncovered:** a system can be built that is better by every
-deterministic metric and worse at every boundary decision, and this suite would
-pass it.
+**Consequence if uncovered:** a filter can be exactly right on every single-step
+case here and drift into certainty over a sequence, which is the normal way
+operational filters fail.
 
-### G-2. Multi-resident sequencing
+### G-2. Multi-resident dispatch sequencing
 
-Every F benchmark has one resident and one vehicle. The first genuinely
-operational question — *which resident do we collect first?* — is untested, and
-it is the question where the loss function's shape (mean versus tail, and whose
-tail) does the most work.
+Every F benchmark has one resident and one vehicle. Triage — **which resident is
+collected first** — is the first genuinely operational question, and it is the
+one where the loss function's shape, and whose tail it measures, does the most
+work.
 
-**Consequence if uncovered:** a dispatcher that is correct on every single-
-resident case can still be systematically wrong about triage.
+**Consequence if uncovered:** a dispatcher correct on every single-resident case
+can still be systematically wrong about who is reached.
 
-### G-3. General correction for informative missingness
+### G-3. Estimating the likelihoods, rather than being given them
 
-WG-BM-016's dropout-aware estimator recovers the truth **exactly**, and only
-because the scenario stipulates that hazard arrival is the sole cause of
-dropout. A real network also loses nodes to battery, comms and vandalism. The
-benchmark says so in its README, but nothing tests a correction under a mixed
-mechanism — where the naive correction is itself biased, in the opposite
-direction.
+`WG-BM-056`'s missingness likelihood, `WG-BM-054`'s joint and `WG-BM-057`'s
+false-negative rate are all **stipulated inputs**. Nothing tests a system that
+must estimate them from data, and that is precisely the case where:
 
-**Consequence if uncovered:** an implementation could adopt the substitution
-used here as a general rule and over-report hazard wherever sensors fail for
+* an MNAR correction can be biased in the *opposite* direction, because ordinary
+  outages are attributed to the hazard;
+* a joint likelihood estimated from a short record understates the correlation;
+* a false-negative rate estimated on clear-air cases does not transfer to smoke.
+
+**Consequence if uncovered:** an implementation could adopt WG-BM-056's exact
+correction as a general rule and over-report hazard wherever sensors fail for
 ordinary reasons.
+
+### G-4. Alert fatigue and dynamic credibility
+
+`WG-BM-058` shows one over-escalation costing 31 against 11. The cost of the
+**next** warning being believed less is real, dynamic, and absent from every loss
+matrix in the suite, because a static loss matrix cannot express it.
+
+**Consequence if uncovered:** a threshold tuned benchmark-by-benchmark will be
+too conservative in aggregate, and the system's own history of false alarms will
+not appear anywhere in its recommendations.
 
 ---
 
-## Moderate — partially covered, or covered only qualitatively
+## Moderate — partially covered, or covered only in one direction
 
-### G-4. Directed-graph connectivity theory
+### G-5. Proper scoring rules beyond Brier
 
-WG-BM-008 checks directed **reachability**. Articulation points, bridges and
-minimum cuts are computed on the **undirected support** of the graph and are
-therefore not asserted for directed networks. Strong articulation points and
-directed cuts are the right notions for a contraflow network and are not
-implemented.
+The M family uses the Brier score and its Murphy decomposition. The logarithmic
+score, CRPS for continuous forecasts, and the general notion of propriety are
+absent — so nothing catches a system that optimises an improper score.
 
-### G-5. Alternative traversal conventions
+### G-6. Where the loss matrix comes from
 
-WG-BM-019 enumerates four defensible conventions for mid-edge closure and pins
-one (interval safety). The other three — entry-time-only, partial traversal with
-a stranded-vehicle model, and reversible with a detection model — have no
-benchmarks. An implementation that chose one of them has nothing to conform to
-beyond "you must declare it".
+Half the K and L results turn on a threshold derived from losses that were
+invented for the benchmark. `WG-BM-062` shows a recommendation turning on 0.21
+of expected loss, and states that re-elicitation rather than observation is the
+productive response — but there is no benchmark for **elicitation quality**, and
+no treatment of a loss matrix given as a range rather than a number.
 
-### G-6. Responder-on-responder interaction
+### G-7. Directed-graph connectivity theory
 
-WG-BM-027 has one responder against an evacuation flow. Two responders competing
-for the same corridor, or a responder delayed by another responder's mission, is
+`WG-BM-008` checks directed reachability. Articulation points, bridges and
+minimum cuts are computed on the **undirected support** and are therefore not
+asserted for directed networks. Strong articulation points and directed cuts are
+the right notions for a contraflow network and are not implemented.
+
+### G-8. Alternative traversal conventions
+
+`WG-BM-019` enumerates four defensible conventions for mid-edge closure and pins
+one. The other three — entry-time-only, partial traversal with a
+stranded-vehicle model, and reversible with a detection model — have no
+benchmarks, so an implementation that chose one of them has nothing to conform
+to beyond "you must declare it".
+
+### G-9. Responder-on-responder interaction
+
+`WG-BM-027` has one responder against an evacuation flow. Two responders
+competing for the same corridor, or one delayed by another's mission, is
 untested.
 
-### G-7. Terrain across a resolution change
+### G-10. Terrain across a resolution change
 
-A-family benchmarks use one cell size. The interesting terrain failure —
-a ridge that exists at 10 m and vanishes at 90 m, taking its aspect
-discontinuity with it — needs a multi-resolution benchmark and does not have one.
+A-family benchmarks use one cell size. The interesting terrain failure — a ridge
+that exists at 10 m and vanishes at 90 m, taking its aspect discontinuity with
+it — needs a multi-resolution benchmark and does not have one.
 
-### G-8. Observation and statistics have only one solver
+### G-11. Cross-checking coverage is uneven
 
-`tests/test_cross_check.py` cross-checks graphs, dispatch, decisions and CVaR
-against independent brute-force implementations. The observation (D) and
-statistics (I) solvers are checked against authored expectations and against the
-third derivations in `tests/test_analytic_identities.py`, but not against a
-second implementation. A shared conceptual error in those two families would not
-be caught by cross-checking.
+`tests/test_cross_check.py` checks graphs, dispatch, decisions, CVaR, Bayesian
+posteriors, EVSI, normal tails and Brier scores against independent
+implementations. The **observation (D)** and **statistics (I)** solvers are
+checked against authored expectations and the third derivations in
+`tests/test_analytic_identities.py`, but not against a second implementation. A
+shared conceptual error in those two families would not be caught by
+cross-checking.
 
-### G-9. Ensemble provenance
+### G-12. Ensemble provenance
 
-WG-BM-036 quantifies how sup-regret moves with ensemble size. Nothing checks
-that an implementation *reports* the ensemble size and provenance alongside a
-worst-case number, which is the actual requirement the benchmark implies.
+`WG-BM-036` quantifies how sup-regret moves with ensemble size, and `WG-BM-048`
+requires excluded scenarios to be reported. Nothing checks that an
+implementation reports the ensemble's **size and provenance** alongside a
+worst-case number, which is the requirement those two benchmarks jointly imply.
 
 ---
 
 ## Out of scope by decision, recorded for completeness
 
-These are not going to be closed here. They are listed so that nobody mistakes
-a green suite for coverage of them. See `docs/SCOPE.md`.
+These are not going to be closed here. They are listed so that nobody mistakes a
+green suite for coverage of them. See `docs/SCOPE.md`.
 
-* **Realistic fire behaviour.** No Rothermel, no FARSITE, no level sets. The
-  fire models here are closed forms chosen so the answer is checkable.
-* **Calibration.** No benchmark asks whether a spread rate is plausible.
-* **Numerical accuracy at scale.** Grid convergence, conditioning and
-  floating-point accumulation over long integrations.
-* **Performance.** Every reference solver here is deliberately the slowest
+* **Realistic fire behaviour.** No Rothermel, no FARSITE, no level sets.
+* **Production probabilistic machinery.** No Bayesian filters, ensemble
+  forecasting systems, calibration models, particle filters or neural
+  uncertainty estimators. Only the tiny exact mathematics needed to test one.
+* **Calibration of physical parameters.** No benchmark asks whether a spread
+  rate is plausible.
+* **Numerical accuracy at scale.** Grid convergence, conditioning, accumulation.
+* **Performance.** Every reference solver is deliberately the slowest
   obviously-correct implementation.
-* **Traffic microsimulation.** WG-BM-027 stipulates two congested travel times.
+* **Traffic microsimulation.** `WG-BM-027` stipulates two congested travel times.
 * **Human behaviour.** Compliance, notification response, shadow evacuation,
-  household preparation time. Decisive in practice; no scenario small enough to
-  make the answer knowable.
+  household preparation time.
 * **Full intervention optimisation.** The J family is mathematical examples of
   protectability, not an optimiser.
 * **Integration with production repositories.** Deferred by instruction;
-  specified in `benchmarks/integration_future/README.md`.
+  requirements specified in `reports/INTEGRATION_COVERAGE.md` and mechanics in
+  `benchmarks/integration_future/README.md`.
 
 ---
 
@@ -129,7 +162,11 @@ a green suite for coverage of them. See `docs/SCOPE.md`.
   not bounded by a window endpoint would be missed. No current benchmark has
   one, and nothing detects it if one is added.
 * **No property-based fuzzing.** The two solver implementations are compared on
-  the 43 fixed inputs, not on randomly generated tiny networks.
+  the 66 fixed inputs, not on randomly generated tiny problems.
 * **Difficulty labels are asserted, not measured.** A benchmark is labelled
   `adversarial` by its author. Nothing confirms that a plausible naive
   implementation actually fails it, beyond the mutations we chose to write.
+* **`NUMERIC_REFERENCE` is defined and unused.** No benchmark currently needs a
+  numerical procedure for its expected value; the class exists so that if one
+  ever does, it cannot be labelled exact. The Simpson quadrature in
+  `tools/analytic_solvers` is a cross-check, not an expected value.

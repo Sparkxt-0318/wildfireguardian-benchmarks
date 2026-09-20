@@ -5,7 +5,7 @@ Ordered by the value of the failure mode closed, not by effort.
 ## Phase 1 — Foundation (complete)
 
 - [x] benchmark and expected-result schemas
-- [x] 43 benchmark scenarios across the A-J families
+- [x] 43 benchmark scenarios across the A-J families (66 after Phase 2)
 - [x] authored expected answers with written derivations
 - [x] primary reference solvers for nine domains
 - [x] independent brute-force solvers and cross-check tests
@@ -16,50 +16,55 @@ Ordered by the value of the failure mode closed, not by effort.
 - [x] figures for the benchmarks where a picture earns its place
 - [x] readiness and known-gap reports
 
-## Phase 2 — Closing the named gaps
+## Phase 2 — Stochastic information, forecasting and risk (complete)
 
-Each item is a gap currently recorded in `reports/KNOWN_GAPS.md`.
+- [x] **Family K — probabilistic forecasts** (WG-BM-044..058). Predictive
+      distributions against a threshold; loss-derived decision thresholds;
+      coherent ensembles with admissibility; the posterior-to-decision chain;
+      exact EVSI; information with no decision value; timeliness against
+      quality; correlated and duplicate evidence; informative missingness; false
+      negatives and false positives.
+- [x] **Family L — decision risk** (WG-BM-059..063). Expected loss against
+      worst case and CVaR with a declared objective; state resolution and
+      decision resolution as independent axes; fragile recommendations.
+- [x] **Family M — calibration** (WG-BM-064..066). Reliability and the Murphy
+      decomposition; overconfidence with a decision cost; aggregate calibration
+      masking conditional failure.
+- [x] 15 further mutations, all detected
+- [x] independent Bayesian, EVSI, quadrature and Brier cross-checks
+- [x] `reports/INTEGRATION_COVERAGE.md`, `reports/BENCHMARK_SELF_AUDIT.md`,
+      `reports/V0_1_SCIENTIFIC_AUDIT.md`
+- [x] frozen at `v0.1.0`
 
-- [ ] **Probabilistic forecast calibration.** Every information source today
-      emits a deterministic signal. Needed: a benchmark where a well-calibrated
-      probabilistic forecast beats a better-scoring deterministic one because it
-      reports its own uncertainty near a decision boundary (the missing partner
-      to WG-BM-029).
-- [ ] **Directed connectivity theory.** WG-BM-008 checks directed reachability;
-      articulation points and cuts are still computed on the undirected support.
-      Needed: strong articulation points and directed minimum cuts.
-- [ ] **Two residents, one vehicle.** The first sequencing benchmark: which
-      resident is collected first changes who survives. Must stay
-      hand-checkable.
-- [ ] **Two vehicles, one corridor.** Responder-on-responder interaction, the
-      companion to WG-BM-027.
-- [ ] **General MNAR correction.** WG-BM-016's dropout-aware estimator is exact
-      only because the scenario stipulates the mechanism. Needed: a case with
-      *two* dropout causes (hazard and battery) where the naive correction is
-      itself wrong.
-- [ ] **Partial-traversal semantics.** WG-BM-019 lists four conventions and
-      pins one. Needed: benchmarks that pin the other three, so an
-      implementation that chose differently has something to conform to.
-- [ ] **Terrain at a real resolution boundary.** Slope and aspect under a
-      resolution change, where the ridge of WG-BM-003 is at sub-cell scale.
+## Phase 3 — Not scheduled (the suite is frozen)
 
-## Phase 3 — Structure and process
+These are the open gaps from `reports/KNOWN_GAPS.md`. **None is scheduled.**
+Under WG-D-018 a benchmark is added only when a real project failure exposes the
+need, so this list is a record of what is known to be missing, not a plan.
 
-- [ ] **Benchmark difficulty audit.** Confirm every `adversarial` benchmark is
-      failed by at least one plausible naive implementation, not merely by a
-      mutation we wrote.
-- [ ] **Convention-variant families.** Where a convention is a choice, ship the
-      variant pair rather than one benchmark plus a note.
-- [ ] **A second independent solver for the D and I families.** Cross-checking
-      currently covers graphs, dispatch, decisions and CVaR; observation and
-      statistics have only the primary implementation.
-- [ ] **Property-based fuzzing of the solvers** against the brute-force ones on
-      randomly generated tiny networks.
+- Continuous and sequential inference (G-1) — the largest gap
+- Multi-resident dispatch sequencing (G-2)
+- Estimating the likelihoods rather than being given them (G-3)
+- Alert fatigue and dynamic credibility (G-4)
+- Proper scoring rules beyond Brier (G-5)
+- Where the loss matrix comes from (G-6)
+- Directed-graph connectivity theory (G-7)
+- The three traversal conventions WG-BM-019 rejects (G-8)
+- Responder-on-responder interaction (G-9)
+- Terrain across a resolution change (G-10)
+- A second independent solver for the D and I families (G-11)
+- Ensemble provenance reporting (G-12)
+- Property-based fuzzing; a measured rather than asserted difficulty audit
 
-## Phase 4 — Integration (deferred, out of scope for now)
+## Phase 4 — Integration (the next work on this repository)
 
-Specified in `benchmarks/integration_future/README.md`. Not to be started until
-the instruction to keep production repositories disconnected is lifted.
+Requirements are specified per repository in `reports/INTEGRATION_COVERAGE.md`
+and the mechanics in `benchmarks/integration_future/README.md`. Not to be
+started until the instruction to keep production repositories disconnected is
+lifted.
+
+- [ ] the eight-benchmark **OSSE gate** before forecast-value experiments scale
+      beyond the minimum viable experiment
 
 - [ ] end-to-end composition benchmark
 - [ ] determinism and CRS-invariance benchmarks

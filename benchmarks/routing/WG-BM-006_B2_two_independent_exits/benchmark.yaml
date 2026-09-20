@@ -16,7 +16,7 @@ expected_behavior:
   node_disjoint_egress_paths: 2
 tolerance:
   default: 1.0e-09
-exactness: exact_enumeration
+exactness: FINITE_ENUMERATION
 detects: [false_single_egress_claim, articulation_point_overinterpretation]
 mutations_expected_to_fail: []
 hand_checkable: true

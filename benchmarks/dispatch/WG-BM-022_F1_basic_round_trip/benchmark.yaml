@@ -19,7 +19,7 @@ expected_behavior:
   monotone_feasibility: true
 tolerance:
   default: 1.0e-06
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [service_time_ignored, mid_edge_hazard, dispatch_deadline_error]
 mutations_expected_to_fail: [ignore_pickup_duration, edge_entry_time_only]
 hand_checkable: true

@@ -54,8 +54,10 @@ mutation.
 `E[loss(best fixed action)] - E[loss(clairvoyant)]`. A property of the decision
 problem alone.
 
-**Exactness.** How much an expected answer is worth: `exact_analytic`,
-`exact_enumeration`, `seeded_stochastic` or `qualitative`. Declared per benchmark.
+**Exactness.** How much an expected answer is worth: `CLOSED_FORM`,
+`FINITE_ENUMERATION`, `NUMERIC_REFERENCE` or `SEEDED_STOCHASTIC_VALIDATION`.
+Declared per benchmark, and a Monte Carlo approximation is never described as
+exact.
 
 **Feasible dispatch interval.** A maximal interval of dispatch times over which
 the whole mission succeeds. The feasible *set* may be several such intervals
@@ -132,3 +134,84 @@ better. Realised value uses the scenario that actually occurred.
 
 **Waiting.** Holding at a node before entering the next edge. Opt-in per
 scenario (WG-SEM-2), and it requires a survivable holding point.
+
+---
+
+## Terms added with the probabilistic families (K, L, M)
+
+**Acquisition time.** When a sensor took the measurement. Distinct from
+availability time, and the wrong one to filter an archive on (WG-BM-014).
+
+**Admissible scenario.** An ensemble member consistent with the declared
+physics. Weights renormalise over the admissible set only, and excluded members
+are reported rather than dropped (WG-BM-048).
+
+**Availability time.** When an observation's product can actually be used. The
+only one of the three times a decision can consume.
+
+**Base rate.** The unconditional probability of the event. Not a property of a
+detector, and the input that does most of the work in interpreting one
+(WG-BM-058).
+
+**Brier score.** Mean squared error of a probability forecast. Decomposes as
+`reliability - resolution + uncertainty` (Murphy).
+
+**Conditional independence.** The assumption that `P(z1, z2 | H) = P(z1 | H) P(z2 | H)`.
+False for co-located sensors, and undetectable from the marginals (WG-BM-054).
+
+**Decision margin.** The gap in expected loss between the best action and the
+runner-up. Reported alongside a recommendation so a reader can see how much it
+took to make it.
+
+**Decision resolved.** The recommendation survives both perfect information
+(`EVPI = 0`) and a declared perturbation of the loss numbers. Independent of
+whether the *state* is resolved.
+
+**Decision threshold `p*`.** The hazard probability at which the optimal action
+changes. Derived from the loss matrix; with more than two actions there is no
+single one and the whole partition is reported.
+
+**EVSI (expected value of sample information).** The reduction in expected loss
+achievable by conditioning on an imperfect observation. Bounded above by EVPI.
+*Statistical* EVSI ignores timing; *operational* EVSI is zero when the
+observation arrives after the decision deadline.
+
+**Expected calibration error (ECE).** The weighted mean absolute gap between
+forecast probability and observed frequency.
+
+**Information gain.** Mutual information between hypothesis and observation, in
+bits. A property of the observation alone, and not a reason to acquire it
+(WG-BM-050).
+
+**Missingness indicator.** The binary variable "did the record arrive?". An
+observation with its own likelihood whenever the arrival probability depends on
+the quantity being estimated.
+
+**MNAR / MAR / MCAR.** Missing not at random / at random / completely at random.
+Fire-correlated sensor failure is MNAR, and no imputation from the observed data
+can fix it.
+
+**Point prediction.** A single number. One of five distinct objects the K family
+keeps apart, and the least of them.
+
+**Posterior belief.** A prior updated by a likelihood. Not a forecast, not an
+ensemble, and not a decision.
+
+**Predictive distribution.** A distribution over the predicted quantity. Under a
+threshold decision it is the forecast; the mean enters only through the tail
+probability.
+
+**Reliability.** The calibration term of the Brier decomposition, the weighted
+mean squared gap between forecast and observed frequency. Zero for a calibrated
+forecast, and zero in aggregate for a forecast wrong in every stratum
+(WG-BM-066).
+
+**Resolution.** The Brier term measuring how far the group frequencies depart
+from the base rate — the forecast's discrimination. Depends on outcomes only, so
+it is unchanged by recalibration.
+
+**State resolved.** Some scenario carries at least the declared share of the
+probability mass. Says nothing about whether the decision is resolved.
+
+**Worth acquiring.** An observation whose operational EVSI is positive.
+"Acquire nothing" is a legitimate recommendation.

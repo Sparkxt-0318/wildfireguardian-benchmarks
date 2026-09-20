@@ -17,7 +17,7 @@ expected_behavior:
   significant_but_not_meaningful: true
 tolerance:
   default: 1.0e-09
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [significance_mistaken_for_importance, no_equivalence_test]
 mutations_expected_to_fail: []
 hand_checkable: true

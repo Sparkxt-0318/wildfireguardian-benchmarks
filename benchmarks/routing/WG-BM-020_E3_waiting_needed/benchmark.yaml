@@ -17,7 +17,7 @@ expected_behavior:
   feasible_without_waiting: false
 tolerance:
   default: 1.0e-09
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [waiting_policy_undeclared, time_window_reopening_ignored]
 mutations_expected_to_fail: [final_perimeter_hazard]
 hand_checkable: true

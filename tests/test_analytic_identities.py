@@ -221,3 +221,182 @@ def test_j_family_information_values():
     assert EXPECTED["WG-BM-042"]["realizable_value_of_information"] == 45.0
     assert EXPECTED["WG-BM-043"]["evpi"] == 45.0
     assert EXPECTED["WG-BM-043"]["realizable_value_of_information"] == 0.0
+
+
+# --------------------------------------------------------------------------
+# K, L and M families: the stochastic-information benchmarks
+# --------------------------------------------------------------------------
+
+
+def _phi(x, mean, sd):
+    return 0.5 * (1.0 + math.erf((x - mean) / (sd * math.sqrt(2.0))))
+
+
+def test_k1_threshold_and_tails():
+    results = EXPECTED["WG-BM-044"]
+    # 100p = 8 at indifference
+    assert results["decision_threshold_probability"] == 8.0 / 100.0
+    tails = results["hazard_probability_by_forecast"]
+    assert tails["forecast_a"] == pytest.approx(_phi(800, 1000, 50), abs=1e-15)
+    assert tails["forecast_b"] == pytest.approx(_phi(800, 1000, 300), abs=1e-15)
+    # Same mean, opposite actions.
+    assert results["action_by_forecast"]["forecast_a"] != results["action_by_forecast"]["forecast_b"]
+    assert len(set(results["point_estimate_action_by_forecast"].values())) == 1
+
+
+def test_k2_skill_and_value_disagree():
+    results = EXPECTED["WG-BM-045"]
+    assert results["true_mean"] == 0.97 * 900.0 + 0.03 * 700.0
+    assert results["location_error_by_forecast"]["forecast_a"] == abs(910.0 - 894.0)
+    assert results["location_error_by_forecast"]["forecast_b"] == abs(940.0 - 894.0)
+    assert results["best_expected_loss_under_truth"] == 0.03 * 100.0
+    assert results["regret_by_forecast"]["forecast_b"] == 0.0
+    assert results["regret_by_forecast"]["forecast_a"] == 8.0 - 3.0
+
+
+def test_k3_threshold_is_lc_over_lf():
+    # divert costs the same in both states: p* = L_conservative / L_failure
+    assert EXPECTED["WG-BM-046"]["decision_threshold_probability"] == 24.0 / 120.0
+    assert EXPECTED["WG-BM-046"]["action_by_probe"]["0.35"] == "divert"  # and 0.35 < 0.5
+
+
+def test_k4_threshold_is_lc_over_lc_plus_lf():
+    # the conservative action fully protects: p* = L_c / (L_c + L_f)
+    assert EXPECTED["WG-BM-047"]["decision_threshold_probability"] == 5.0 / (5.0 + 495.0)
+    probes = EXPECTED["WG-BM-047"]["probes"]
+    assert probes["0.4"]["expected_loss"]["proceed"] == 0.4 * 495.0
+    assert probes["0.4"]["expected_loss"]["hold_back"] == 0.6 * 5.0
+
+
+def test_k5_normalisation_and_joint():
+    results = EXPECTED["WG-BM-048"]
+    assert results["normalised_weights"]["omega_4"] == 3.0 / 8.0
+    assert results["joint_all_closed_probability"] == 3.0 / 8.0
+    assert results["joint_under_independence"] == 0.5 * 0.5
+    assert results["expected_loss"]["assume_egress"] == (3.0 / 8.0) * 140.0
+    assert results["expected_loss_under_independence"]["assume_egress"] == 0.25 * 140.0
+
+
+def test_k6_bayes_by_hand():
+    results = EXPECTED["WG-BM-049"]
+    assert results["decision_threshold_probability"] == 5.0 / 25.0
+    posterior = results["observations"]["ridge_anomaly"]["posterior_hazard_by_outcome"]
+    assert posterior["anomaly"] == pytest.approx((0.1 * 0.9) / 0.27, abs=1e-15)
+    assert posterior["no_anomaly"] == pytest.approx((0.1 * 0.1) / 0.73, abs=1e-15)
+    assert results["observations"]["ridge_anomaly"]["evsi_statistical"] == pytest.approx(
+        2.0 - (0.9 + 0.2), abs=1e-12
+    )
+
+
+def test_k7_zero_value_positive_information():
+    observation = EXPECTED["WG-BM-050"]["observations"]["valley_haze"]
+    assert observation["evsi_statistical"] == 0.0
+    assert observation["information_gain_bits"] > 0.0
+    assert EXPECTED["WG-BM-050"]["evpi"] > 0.0  # the zero belongs to this observation
+
+
+def test_k8_evsi_arithmetic():
+    results = EXPECTED["WG-BM-051"]
+    assert results["prior_expected_loss"] == 40.0
+    # each branch: the wrong-side road costs 0.2 * 90
+    assert results["observations"]["bearing_sensor"]["evsi_statistical"] == 40.0 - 0.2 * 90.0
+    assert results["evpi"] == 40.0
+
+
+def test_k9_and_k10_timing():
+    late = EXPECTED["WG-BM-052"]["observations"]["bearing_sensor"]
+    assert late["availability_time_min"] > 10.0  # the declared deadline
+    assert late["evsi_statistical"] == 22.0 and late["evsi_operational"] == 0.0
+    ten = EXPECTED["WG-BM-053"]
+    assert ten["evsi_statistical_by_observation"]["weak_early"] == 40.0 - 0.3 * 90.0
+    assert ten["evsi_operational_by_observation"]["perfect_late"] == 0.0
+    assert ten["ranked_by_operational_value"][0] != ten["ranked_by_information_gain"][0]
+
+
+def test_k11_and_k12_correlated_and_duplicate():
+    pair = EXPECTED["WG-BM-054"]["observations"]["sensor_pair"]
+    assert pair["realised_posterior_hazard"] == pytest.approx(0.16 / 0.92, abs=1e-15)
+    assert pair["realised_posterior_under_independence"] == pytest.approx(0.04 / 0.68, abs=1e-15)
+    assert pair["realised_action"] != pair["realised_action_under_independence"]
+    duplicate = EXPECTED["WG-BM-055"]["observations"]["duplicated_report"]
+    assert duplicate["realised_posterior_hazard"] == 0.2 / (0.2 + 0.8)
+    assert duplicate["realised_log_likelihood_ratio_bits"] == math.log2(0.2 / 0.8)
+    assert duplicate["realised_log_likelihood_ratio_bits_under_independence"] == 2 * math.log2(
+        0.2 / 0.8
+    )
+
+
+def test_k13_missingness_is_evidence():
+    observation = EXPECTED["WG-BM-056"]["observations"]["telemetry_status"]
+    assert observation["realised_posterior_hazard"] == pytest.approx(
+        (0.05 * 0.6) / (0.05 * 0.6 + 0.95 * 0.05), abs=1e-15
+    )
+    assert observation["realised_log_likelihood_ratio_bits"] == math.log2(0.6 / 0.05)
+    assert observation["evsi_statistical"] == pytest.approx(4.5 - (0.475 + 1.8), abs=1e-12)
+
+
+def test_k14_non_detection():
+    results = EXPECTED["WG-BM-057"]
+    posterior = results["observations"]["detector"]["realised_posterior_hazard"]
+    assert posterior == pytest.approx((0.2 * 0.3) / (0.2 * 0.3 + 0.8 * 0.95), abs=1e-15)
+    assert posterior > results["decision_threshold_probability"] == 5.0 / (5.0 + 95.0)
+    assert posterior > 0.0
+
+
+def test_k15_false_positive():
+    results = EXPECTED["WG-BM-058"]
+    posterior = results["observations"]["detector"]["realised_posterior_hazard"]
+    assert posterior == pytest.approx((0.02 * 0.7) / (0.02 * 0.7 + 0.98 * 0.05), abs=1e-15)
+    assert posterior < 0.5
+    # at p = 2/9 the three expected losses are 200p, 6(1-p)+30p and 40(1-p)
+    p = 2.0 / 9.0
+    assert min(200 * p, 6 * (1 - p) + 30 * p, 40 * (1 - p)) == pytest.approx(
+        6 * (1 - p) + 30 * p, abs=1e-12
+    )
+    assert results["observations"]["detector"]["realised_action"] == "divert_traffic"
+
+
+def test_l1_and_l2_risk_criteria():
+    l1 = EXPECTED["WG-BM-059"]
+    assert l1["expected_loss"]["policy_a"] == 0.8 * 0.0 + 0.2 * 60.0
+    assert l1["expected_loss"]["policy_b"] == 0.8 * 15.0 + 0.2 * 25.0
+    assert l1["recommended_action"] is None
+    l2 = EXPECTED["WG-BM-060"]
+    # CVaR at 0.9 splits the awkward atom: (0.05*300 + 0.05*20) / 0.1
+    assert l2["cvar"]["policy_a"] == pytest.approx((0.05 * 300.0 + 0.05 * 20.0) / 0.1, abs=1e-12)
+    assert l2["cvar"]["policy_b"] == pytest.approx((0.05 * 40.0 + 0.05 * 18.0) / 0.1, abs=1e-12)
+    assert l2["recommended_action"] == l2["best_by_cvar"] != l2["best_by_expected_loss"]
+
+
+def test_l3_l4_l5_state_versus_decision():
+    l3 = EXPECTED["WG-BM-061"]
+    assert l3["evpi"] == 0.0 and l3["state_resolved"] is False and l3["decision_resolved"] is True
+    l4 = EXPECTED["WG-BM-062"]
+    assert l4["decision_margin"] == pytest.approx(0.03 * 7.0, abs=1e-12)  # 0.03 * (17 - 10)
+    assert l4["min_perturbation_to_flip"] == pytest.approx(l4["decision_margin"] / 0.97, abs=1e-12)
+    assert l4["state_resolved"] is True and l4["decision_stable"] is False
+    l5 = EXPECTED["WG-BM-063"]
+    assert l5["expected_loss"]["stage_at_junction"] == pytest.approx(
+        0.4 * 4 + 0.3 * 4 + 0.2 * 5 + 0.1 * 5, abs=1e-12
+    )
+    assert l5["evpi"] == 0.0 and l5["forecast_skill_score"] < 0.5
+
+
+def test_m_family_calibration():
+    m1 = EXPECTED["WG-BM-064"]
+    assert m1["base_rate"] == 430.0 / 800.0
+    assert m1["uncertainty"] == pytest.approx((430 / 800) * (370 / 800), abs=1e-15)
+    assert m1["aggregate_calibration_error"] == 0.0
+    assert m1["murphy_residual"] == 0.0
+    m2 = EXPECTED["WG-BM-065"]
+    assert m2["aggregate_calibration_error"] == pytest.approx(
+        0.25 * 0.15 + 0.375 * 0.15, abs=1e-15
+    )
+    assert m2["reliability"] == pytest.approx(0.25 * 0.0225 + 0.375 * 0.0225, abs=1e-15)
+    # resolution and uncertainty are unchanged, so the Brier gap is the reliability
+    assert m2["brier_score"] - m1["brier_score"] == pytest.approx(m2["reliability"], abs=1e-15)
+    assert m2["decision"]["total_excess_expected_loss"] == 200 * (0.2 * 90 - 0.8 * 10)
+    m3 = EXPECTED["WG-BM-066"]
+    assert m3["aggregate_calibration_error"] == 0.0
+    assert m3["stratified_calibration_error"] == pytest.approx(0.5 * 0.3 + 0.5 * 0.3, abs=1e-15)
+    assert m3["decision"]["total_excess_expected_loss"] == 400 * (0.8 * 30 - 0.2 * 70)

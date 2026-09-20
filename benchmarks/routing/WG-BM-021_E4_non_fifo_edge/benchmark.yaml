@@ -17,7 +17,7 @@ expected_behavior:
   earliest_arrival_over_departures_min: 15.0
 tolerance:
   default: 1.0e-09
-exactness: exact_enumeration
+exactness: FINITE_ENUMERATION
 detects: [non_fifo_network, premature_departure_assumed_optimal]
 mutations_expected_to_fail: [fifo_assumption]
 hand_checkable: true

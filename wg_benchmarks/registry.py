@@ -4,7 +4,20 @@ from __future__ import annotations
 
 from typing import Callable
 
-from .solvers import decision, dispatch, fire, graph, observation, routing, scenario, stats, terrain
+from .solvers import (
+    calibration,
+    decision,
+    dispatch,
+    fire,
+    graph,
+    observation,
+    probabilistic,
+    risk,
+    routing,
+    scenario,
+    stats,
+    terrain,
+)
 
 SOLVERS: dict[str, Callable[[dict], dict]] = {
     "terrain.horn_slope_aspect": terrain.solve,
@@ -16,6 +29,11 @@ SOLVERS: dict[str, Callable[[dict], dict]] = {
     "decision.value_of_information": decision.solve,
     "scenario.ensemble_analysis": scenario.solve,
     "statistics.reference": stats.solve,
+    "probabilistic.predictive_threshold": probabilistic.solve,
+    "probabilistic.bayes_decision": probabilistic.solve,
+    "probabilistic.scenario_ensemble": probabilistic.solve,
+    "risk.objective_comparison": risk.solve,
+    "calibration.reliability": calibration.solve,
 }
 
 

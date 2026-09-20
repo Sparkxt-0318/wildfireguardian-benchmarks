@@ -16,7 +16,7 @@ expected_behavior:
   selected_destination: refuge_north
 tolerance:
   default: 1.0e-09
-exactness: exact_enumeration
+exactness: FINITE_ENUMERATION
 detects: [unreachable_destination_selected, euclidean_proximity_fallacy]
 mutations_expected_to_fail: [euclidean_destination]
 hand_checkable: true

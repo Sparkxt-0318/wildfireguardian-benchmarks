@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 380" width="560" height="380" role="img" aria-label="L2  Mean and CVaR disagree">
+<rect width="560" height="380" fill="#fcfcfb"/>
+<text x="36.0" y="24.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">L2  Mean and CVaR disagree</text>
+<text x="36.0" y="40.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">declared objective is CVaR, so policy_b is recommended</text>
+<line x1="76" y1="324.0" x2="536" y2="324.0" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="328.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">0</text>
+<line x1="76" y1="285.7" x2="536" y2="285.7" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="289.7" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">25</text>
+<line x1="76" y1="247.4" x2="536" y2="247.4" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="251.4" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">50</text>
+<line x1="76" y1="209.1" x2="536" y2="209.1" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="213.1" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">75</text>
+<line x1="76" y1="170.9" x2="536" y2="170.9" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="174.9" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">100</text>
+<line x1="76" y1="132.6" x2="536" y2="132.6" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="136.6" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">125</text>
+<line x1="76" y1="94.3" x2="536" y2="94.3" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="98.3" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">150</text>
+<line x1="76" y1="56.0" x2="536" y2="56.0" stroke="#e2e1dd" stroke-width="1"/>
+<text x="68.0" y="60.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="end" font-weight="normal">175</text>
+<text x="191.0" y="342.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">policy_a</text>
+<text x="421.0" y="342.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">policy_b</text>
+<line x1="76" y1="324" x2="536" y2="324" stroke="#52514e" stroke-width="1"/>
+<text x="306.0" y="366.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="12" fill="#52514e" text-anchor="middle" font-weight="normal">policy</text>
+<text x="16" y="190.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="12" fill="#52514e" text-anchor="middle" transform="rotate(-90 16 190.0)">loss</text>
+<rect x="135.1" y="298.0" width="52" height="26.0" rx="4" fill="#2a78d6"/>
+<rect x="194.9" y="79.0" width="52" height="245.0" rx="4" fill="#eb6834"/>
+<text x="161.1" y="290.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">17</text>
+<text x="220.9" y="71.0" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">160</text>
+<rect x="365.1" y="294.7" width="52" height="29.3" rx="4" fill="#2a78d6"/>
+<rect x="424.9" y="279.6" width="52" height="44.4" rx="4" fill="#eb6834"/>
+<text x="391.1" y="286.7" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">19.1</text>
+<text x="450.9" y="271.6" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="normal">29</text>
+<text x="161.1" y="66.7" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#2a78d6" text-anchor="middle" font-weight="normal">expected loss</text>
+<text x="450.9" y="66.7" font-family="ui-sans-serif,-apple-system,Segoe UI,Helvetica,sans-serif" font-size="11" fill="#eb6834" text-anchor="middle" font-weight="normal">CVaR(0.9)</text>
+</svg>

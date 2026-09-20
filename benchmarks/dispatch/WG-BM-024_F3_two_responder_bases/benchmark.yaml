@@ -19,7 +19,7 @@ expected_behavior:
   nearest_base: base_near
 tolerance:
   default: 1.0e-06
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [greedy_base_selection, ingress_corridor_ignored]
 mutations_expected_to_fail: [nearest_base_only]
 hand_checkable: true

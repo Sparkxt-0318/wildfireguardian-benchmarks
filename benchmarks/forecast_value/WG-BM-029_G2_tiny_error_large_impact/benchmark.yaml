@@ -17,7 +17,7 @@ expected_behavior:
     forecast_aware: -42.5
 tolerance:
   default: 1.0e-09
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [skill_value_conflation, decision_boundary_sensitivity]
 mutations_expected_to_fail: [skill_implies_value]
 hand_checkable: true

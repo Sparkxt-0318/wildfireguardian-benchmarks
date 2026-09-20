@@ -183,3 +183,109 @@ def cvar_by_expansion(
     sample.sort()
     tail = max(1, int(round((1 - alpha) * len(sample))))
     return sum(sample[-tail:]) / tail
+
+
+# --------------------------------------------------------------------------
+# Bayesian inference and the value of information
+# --------------------------------------------------------------------------
+
+
+def exact_posterior(
+    prior: dict[str, float], likelihood: dict[str, dict[str, float]], outcome: str
+) -> dict[str, float]:
+    """Bayes by direct enumeration over the hypothesis set."""
+    joint = {h: prior[h] * likelihood[h][outcome] for h in prior}
+    evidence = sum(joint.values())
+    if evidence == 0.0:
+        raise ValueError(f"outcome {outcome!r} has zero probability under the prior")
+    return {h: joint[h] / evidence for h in prior}
+
+
+def evsi_by_rule_enumeration(
+    prior: dict[str, float],
+    likelihood: dict[str, dict[str, float]],
+    outcomes: Sequence[str],
+    actions: Sequence[str],
+    loss: dict[str, dict[str, float]],
+) -> dict:
+    """Expected value of sample information, by enumerating every decision rule.
+
+    A deterministic rule is a mapping from observed outcome to action, so there
+    are ``len(actions) ** len(outcomes)`` of them and every one is evaluated
+    against the joint distribution. This never forms a posterior at all, which
+    makes it a genuinely independent route to the same number as the
+    branch-by-branch computation in ``wg_benchmarks.solvers.probabilistic``.
+    """
+    def rule_loss(rule: dict[str, str]) -> float:
+        return sum(
+            prior[h] * likelihood[h][z] * loss[rule[z]][h]
+            for h in prior
+            for z in outcomes
+        )
+
+    best_rule, best_value = None, INF
+    for assignment in itertools.product(sorted(actions), repeat=len(outcomes)):
+        rule = dict(zip(outcomes, assignment))
+        value = rule_loss(rule)
+        if value < best_value - 1e-15:
+            best_rule, best_value = rule, value
+
+    prior_best = min(
+        sum(prior[h] * loss[a][h] for h in prior) for a in actions
+    )
+    clairvoyant = sum(prior[h] * min(loss[a][h] for a in actions) for h in prior)
+    return {
+        "best_rule": best_rule,
+        "expected_loss_with_observation": best_value,
+        "prior_expected_loss": prior_best,
+        "evsi": prior_best - best_value,
+        "evpi": prior_best - clairvoyant,
+    }
+
+
+def normal_tail_by_quadrature(
+    x: float, mean: float, sd: float, panels: int = 20000
+) -> float:
+    """P(X <= x) by composite Simpson quadrature of the normal density.
+
+    An independent check on the ``erf``-based closed form used by the primary
+    solver. The integrand is smooth and the interval is truncated twelve
+    standard deviations below the mean, where the neglected tail is below 1e-32;
+    with 20000 panels Simpson's error term is far below 1e-12, so this is a
+    NUMERIC_REFERENCE with a declared bound rather than an approximation of
+    unknown quality.
+    """
+    if panels % 2:  # Simpson needs an even number of panels
+        panels += 1
+    low = mean - 12.0 * sd
+    if x <= low:
+        return 0.0
+    width = (x - low) / panels
+    density = lambda t: math.exp(-0.5 * ((t - mean) / sd) ** 2) / (sd * math.sqrt(2 * math.pi))
+    total = density(low) + density(x)
+    for index in range(1, panels):
+        weight = 4 if index % 2 else 2
+        total += weight * density(low + index * width)
+    return total * width / 3.0
+
+
+# --------------------------------------------------------------------------
+# calibration
+# --------------------------------------------------------------------------
+
+
+def brier_by_case_enumeration(groups: Sequence[dict]) -> float:
+    """Brier score as the mean of (p - y)^2 over individual cases.
+
+    The primary solver works group by group with observed frequencies; this
+    expands every group into its individual 0/1 outcomes and averages. Same
+    number, no shared algebra.
+    """
+    total = 0.0
+    count = 0
+    for group in groups:
+        n, events = int(group["n"]), int(group["events"])
+        p = float(group["forecast_probability"])
+        total += events * (p - 1.0) ** 2 + (n - events) * p ** 2
+        count += n
+    return total / count

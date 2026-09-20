@@ -15,7 +15,7 @@ expected_behavior:
   latest_feasible_dispatch_min: 15.0
 tolerance:
   default: 1.0e-06
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [static_destination_assignment, destination_deadline_ignored]
 mutations_expected_to_fail: [ignore_pickup_duration, edge_entry_time_only]
 hand_checkable: true

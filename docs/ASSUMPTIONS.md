@@ -128,8 +128,55 @@ the same thing, and no benchmark compares them.
   benchmark input.
 * **WG-STA-4.** Policy comparisons are paired on common worlds.
 * **WG-STA-5.** Stochastic quantities are seeded, and the benchmark declares
-  `exactness: seeded_stochastic` together with a tolerance justified by the
+  `exactness: SEEDED_STOCHASTIC_VALIDATION` together with a tolerance justified by the
   Monte Carlo error.
+
+## Probabilistic forecasts, belief and risk (K, L, M families)
+
+* **WG-PRB-1 (five distinct objects).** A point prediction, a predictive
+  distribution, a scenario ensemble, a posterior belief and a decision are five
+  different things and are never interchanged. Each benchmark that involves
+  uncertainty declares which it is using in its `information_structure` block.
+* **WG-PRB-2 (thresholds are derived).** The probability at which an action
+  changes is derived from the loss matrix and never assumed. Two matrices in
+  common use give two different formulas:
+  * conservative action costs the same in both states: `p* = L_c / L_f`;
+  * conservative action fully protects: `p* = L_c / (L_c + L_f)`.
+  With more than two actions there is no single threshold: the optimal action
+  as a function of `p` is the lower envelope of the actions' loss lines, and the
+  whole partition is reported.
+* **WG-PRB-3 (no 0.5).** `p = 0.5` is where one hypothesis becomes more likely
+  than another. That is not a decision.
+* **WG-PRB-4 (scenario admissibility).** Ensemble members carry an
+  `admissible` flag. Weights are renormalised over the admissible set only, and
+  excluded members are reported rather than silently dropped.
+* **WG-PRB-5 (joint likelihoods).** Dependence between observations is carried
+  as a joint likelihood. Per-sensor marginals are never multiplied, and the
+  marginals alone do not contain the information needed to notice the error.
+* **WG-PRB-6 (deduplication by measurement).** Evidence is deduplicated by what
+  was measured, not by the record that carried it.
+* **WG-PRB-7 (missingness is an outcome).** Where the probability that a record
+  arrives depends on the quantity being estimated, the missingness indicator is
+  an observation with its own likelihood, not an absence of data.
+* **WG-PRB-8 (detections are evidence).** A detection does not set the posterior
+  to 1 and a non-detection does not set it to 0. Both are likelihood ratios.
+* **WG-PRB-9 (three times).** Acquisition time, availability time and decision
+  deadline are distinct. Only availability time bounds what a decision can
+  consume, and `evsi_operational` is zero when availability exceeds the
+  deadline.
+* **WG-PRB-10 (acquisition follows value).** An observation is worth acquiring
+  when its operational EVSI is positive, not when its mutual information is.
+  "Acquire nothing" is a legitimate recommendation.
+* **WG-PRB-11 (the objective is declared).** Expected loss, CVaR and worst case
+  are different objectives. The risk benchmarks take the objective as an input,
+  and `report_only` declines to name a winner.
+* **WG-PRB-12 (state and decision are separate axes).** `state_resolved` asks
+  whether a scenario dominates; `decision_resolved` asks whether the
+  recommendation survives both perfect information and a declared perturbation
+  of the loss numbers. Neither implies the other.
+* **WG-PRB-13 (calibration is conditional).** Reliability is reported both in
+  aggregate and within declared strata, and a clean aggregate over dirty strata
+  is a failure.
 
 ## Numerical conventions
 
@@ -139,3 +186,9 @@ the same thing, and no benchmark compares them.
 * Arrival-time orderings break ties after rounding to `1e-9` minutes, so two
   analytically simultaneous points are not separated by the last bit of a square
   root.
+* The probabilistic families use a tolerance of `1e-12`: their quantities are
+  closed forms in elementary functions and `erf`, so agreement should be at
+  machine precision.
+* Monte Carlo is never used as truth where an exact answer exists. Where a
+  numerical procedure is used it carries a declared, analytically justified
+  error bound and is classed `NUMERIC_REFERENCE`, never `CLOSED_FORM`.

@@ -17,7 +17,7 @@ expected_behavior:
   feasible_under_entry_time_semantics: true
 tolerance:
   default: 1.0e-09
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [mid_edge_hazard, undeclared_traversal_semantics]
 mutations_expected_to_fail: [edge_entry_time_only]
 hand_checkable: true

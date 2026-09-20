@@ -73,7 +73,7 @@ The bootstrap confidence intervals are Monte Carlo estimates from 200 resamples
 of 10 worlds — themselves quite variable — and are checked against the analytic
 values within a declared band (±5 on the world width, ±0.15 on the resident
 width, ±12 on the ratio). The exactness of this benchmark is recorded as
-`seeded_stochastic` for that reason.
+`SEEDED_STOCHASTIC_VALIDATION` for that reason.
 
 ## Expected
 

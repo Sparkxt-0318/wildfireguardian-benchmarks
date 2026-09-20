@@ -17,7 +17,7 @@ expected_behavior:
     p_upwind: 50.0
 tolerance:
   default: 1.0e-09
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [anisotropy_ignored, wind_direction_sign_error]
 mutations_expected_to_fail: [isotropic_fire]
 hand_checkable: true

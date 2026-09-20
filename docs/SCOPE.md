@@ -15,11 +15,22 @@
 | Scenario uncertainty | correlation, mutually exclusive scenarios, ensemble-size effects |
 | Statistics | pseudoreplication, tail risk, practical equivalence, selection bias |
 | Protectability | robust action existence, value of information, information that arrives too late |
+| Probabilistic forecasts | predictive distributions, loss-derived decision thresholds, coherent ensembles, Bayesian updating, EVSI, correlated and duplicate evidence, informative missingness, false negatives and positives |
+| Decision risk | expected loss versus CVaR versus worst case with a declared objective, robust actions under unresolved states, fragile recommendations under resolved states |
+| Calibration | reliability, the Murphy decomposition, overconfidence, and conditional versus aggregate calibration |
 
 ## Explicitly out of scope
 
 These are not oversights. Each is excluded for a reason, and the reasons are
 worth keeping.
+
+**Production probabilistic machinery.** No Bayesian filters, ensemble
+forecasting systems, calibration models, particle filters or neural uncertainty
+estimators. The K, L and M families contain only the tiny exact mathematics
+needed to test an external system: a normal tail through `erf`, Bayes on a
+two-hypothesis space, EVSI by enumeration over a handful of outcomes, and the
+Brier decomposition on five groups. If a benchmark needed an inference algorithm
+to state its expected answer it would no longer be hand-checkable.
 
 **Realistic fire behaviour models.** Rothermel, FARSITE, level-set and
 cellular-automaton spread are all out of scope. Their outputs cannot be checked
@@ -57,9 +68,9 @@ of protectability, not an optimiser over interventions.
 
 Some things sit on the edge and have been decided one way:
 
-* **Probabilistic forecasts** are in scope conceptually but currently
-  unrepresented: every information source in the G and J families emits a
-  deterministic signal. Calibration benchmarks are a recorded gap.
+* **Probabilistic forecasts** were a recorded gap in v0.0 and are now the K and
+  M families. The G and J families still emit deterministic signals, which is
+  deliberate: they isolate timeliness and value from calibration.
 * **Directed-graph connectivity theory** is partially in scope: WG-BM-008 checks
   directed reachability, but articulation points and cuts are computed on the
   undirected support only. Recorded as a gap.

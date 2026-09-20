@@ -17,7 +17,7 @@ expected_behavior:
       matches_truth: true
 tolerance:
   default: 1.0e-09
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [observation_pipeline_offset]
 mutations_expected_to_fail: []
 hand_checkable: true

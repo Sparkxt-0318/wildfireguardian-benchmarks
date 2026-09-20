@@ -15,7 +15,7 @@ expected_behavior:
   skill_and_value_agree: false
 tolerance:
   default: 1.0e-09
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [skill_value_conflation, timeliness_ignored]
 mutations_expected_to_fail: [skill_implies_value, forecast_always_trusted]
 hand_checkable: true

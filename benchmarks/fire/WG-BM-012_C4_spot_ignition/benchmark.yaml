@@ -15,7 +15,7 @@ expected_behavior:
   burned_cells: 14
 tolerance:
   default: 1.0e-09
-exactness: exact_enumeration
+exactness: FINITE_ENUMERATION
 detects: [spotting_ignored, perimeter_connectivity_assumed]
 mutations_expected_to_fail: [single_ignition_only]
 hand_checkable: true

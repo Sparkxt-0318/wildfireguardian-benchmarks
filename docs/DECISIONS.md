@@ -132,3 +132,72 @@ WG-BM-027 takes two congested travel times as inputs rather than deriving them
 from a queueing model. A benchmark that needs a traffic model to state its
 expected answer is no longer hand-checkable, and the scientific content here is
 that ingress and egress share a road, not how congestion forms.
+
+---
+
+## WG-D-014 — The exactness vocabulary is the four uppercase classes
+**Status:** accepted, supersedes the lower-case vocabulary used in v0.0
+
+`exactness` now takes `CLOSED_FORM`, `FINITE_ENUMERATION`, `NUMERIC_REFERENCE`
+or `SEEDED_STOCHASTIC_VALIDATION`. The mapping from the previous vocabulary was
+mechanical (`exact_analytic` → `CLOSED_FORM`, `exact_enumeration` →
+`FINITE_ENUMERATION`, `seeded_stochastic` → `SEEDED_STOCHASTIC_VALIDATION`), and
+the unused `qualitative` value was dropped.
+
+This is the **only** change made to the 43 deterministic benchmarks in the v0.1
+extension. No expected value, input, convention or tolerance was touched, and
+all 43 still pass; the diff is 43 single-token lines. `NUMERIC_REFERENCE` is new
+and carries the rule that a Monte Carlo estimate is never described as exact.
+
+---
+
+## WG-D-015 — Expected values for stochastic benchmarks come from four sources only
+**Status:** accepted
+
+Closed-form probability, exact finite enumeration, an independently implemented
+brute force, or analytically justified numerical integration with a declared
+tolerance. Monte Carlo is not permitted as truth where an exact answer exists,
+and a Monte Carlo approximation is never described as exact.
+
+In practice 51 of the 66 benchmarks are `CLOSED_FORM`, 14 are
+`FINITE_ENUMERATION`, and one — WG-BM-037's bootstrap — is
+`SEEDED_STOCHASTIC_VALIDATION` with its analytic counterparts pinned exactly
+alongside.
+
+---
+
+## WG-D-016 — Acquisition is recommended by decision value, not information gain
+**Status:** accepted
+
+`recommended_observation` is the observation with the greatest **operational**
+EVSI, and it is `null` when no observation has positive operational value.
+`observations_worth_acquiring` lists those that do.
+
+*How this was arrived at:* WG-BM-050 (K7) originally declared that it detected
+the `choose_by_information_gain` mutation, and `tests/test_mutations.py` showed
+that it did not — with a single observation, ranking by information and ranking
+by value select the same one. Rather than drop the claim, the solver was changed
+so that it answers the question the benchmark is actually about: *should this be
+acquired at all?* The clean solver now says no (EVSI is exactly zero) and the
+mutated one says yes. The detection is real, and the solver is better.
+
+---
+
+## WG-D-017 — A benchmark family may span more than one authoring script
+**Status:** accepted
+
+The K family has fifteen members and is authored in
+`author_probabilistic_forecast.py` (K1-K5) and `author_bayesian_inference.py`
+(K6-K15). The split is by subject, and the family label remains the unit of
+reference.
+
+---
+
+## WG-D-018 — The suite is frozen at v0.1.0
+**Status:** accepted
+
+After this extension the suite stops growing. A new benchmark is added only when
+a real project failure exposes a missing case — not because a family looks
+asymmetric or a category looks thin. The reason is that an unused benchmark
+still has to be maintained, still has to be kept honest about what it detects,
+and still dilutes the coverage reports it appears in.

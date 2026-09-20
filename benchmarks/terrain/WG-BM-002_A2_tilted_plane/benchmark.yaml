@@ -18,7 +18,7 @@ expected_behavior:
   interior_undefined: 0
 tolerance:
   default: 1.0e-09
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [slope_magnitude_error, aspect_convention_error, axis_transposition]
 mutations_expected_to_fail: []
 hand_checkable: true

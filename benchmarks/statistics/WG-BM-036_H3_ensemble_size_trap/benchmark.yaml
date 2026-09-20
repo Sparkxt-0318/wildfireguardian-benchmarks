@@ -16,7 +16,7 @@ expected_behavior:
     minimax_action_changed: true
 tolerance:
   default: 1.0e-09
-exactness: exact_analytic
+exactness: CLOSED_FORM
 detects: [sup_regret_scales_with_ensemble_size, worst_case_criterion_instability]
 mutations_expected_to_fail: []
 hand_checkable: true

@@ -17,7 +17,7 @@ expected_behavior:
     regret_of_trusting: 95.0
 tolerance:
   default: 1.0e-09
-exactness: exact_enumeration
+exactness: FINITE_ENUMERATION
 detects: [false_negative_treated_as_negative, unverified_clear_claim]
 mutations_expected_to_fail: [assume_missing_is_safe]
 hand_checkable: true
